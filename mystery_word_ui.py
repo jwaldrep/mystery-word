@@ -10,7 +10,8 @@ def main(starting_word_list):
     print(word_list)
     word = random_word(word_list)
     print('The mystery word has {} letters. Good luck!'.format(len(word)))
-    make_guess()
+    print('The mystery word is {}'.format(word))
+    print(make_guess(word, word_list))
 
 def choose_difficulty(starting_word_list):
     """Asks user for difficulty level and passes appropriate word list function"""
@@ -21,12 +22,19 @@ def choose_difficulty(starting_word_list):
     level = levels[selection]
     return level(starting_word_list)
 
-def make_guess():
+def make_guess(word, word_list):
     guess = ''
     while (not guess.isalpha()) or len(guess) != 1 :
         guess = input('Please guess a letter: ').lower()
 
-    guesses.append(guess)
+    is_good_guess = check_letter(guess, word, word_list)
+    if is_good_guess == None:
+        print('You already guessed that!')
+        guess = input('Please guess a letter: ').lower()
+        
+
+    #guesses.append(guess)
+    return is_good_guess
 
 def get_starting_word_list(filename='/usr/share/dict/words'):
     """Takes filename and filters into list of lowercase words"""
