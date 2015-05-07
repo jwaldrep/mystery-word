@@ -2,33 +2,42 @@ import random
 
 class MysteryWord(object):
     """MysteryWord object"""
-    def __init__(self, arg):
-        super(self).__init__()
-        self.arg = arg
+    default_word_list = ["bird", "calf", "river", "stream", "kneecap",  "cookbook",
+                         "language", "sneaker", "algorithm", "integration", "brain"]
 
-    def easy_words(word_list):
+    def __init__(self, word_list=default_word_list, allowed_guesses=10, difficulty='easy_words'):
+        self.word_list = word_list
+        self.word = self.random_word(word_list)
+        self.guesses = []
+        self.allowed_guesses = allowed_guesses
+        self.difficulty = difficulty
+
+    def __str__(self):
+        self.display_word(self.word, self.guesses)
+
+    def easy_words(self, word_list):
         """Returns list of words with 4-6 characters in word_list"""
         return [word for word in word_list if 4 <= len(word) <= 6]
 
-    def medium_words(word_list):
+    def medium_words(self, word_list):
         """Returns list of words with 6-8 characters in word_list"""
         return [word for word in word_list if 6 <= len(word) <= 8]
 
-    def hard_words(word_list):
+    def hard_words(self, word_list):
         """Returns list of words with 8+ characters in word_list"""
         return [word for word in word_list if 8 <= len(word)]
 
-    def random_word(word_list):
+    def random_word(self, word_list):
         """Returns a random word from word_list"""
         return random.choice(word_list)
 
-    def display_word(word, letter_list):
+    def display_word(self, word, letter_list):
         """Returns a string showing which letters from letter_list are in word"""
-        output_list = [MysteryWord.display_letter(letter, letter_list) for letter in word]
+        output_list = [self.display_letter(letter, letter_list) for letter in word]
         output = ' '.join(output_list)
         return output
 
-    def display_letter(letter, letter_list, blank_char='_'):
+    def display_letter(self, letter, letter_list, blank_char='_'):
         """Returns uppercase letter if letter in letter_list, else returns blank_char"""
         if letter in letter_list:
             return letter.upper()
@@ -51,3 +60,9 @@ class MysteryWord(object):
             if letter not in letter_list:
                 return False
         return True
+
+    def make_guess():
+        pass
+
+game = MysteryWord()
+print(game)
