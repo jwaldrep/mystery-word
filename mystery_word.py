@@ -19,10 +19,15 @@ def random_word(word_list):
 
 def display_word(word, letter_list):
     """Returns a string showing which letters from letter_list are in word"""
-    output_list = ['_ ' for letter in word]
+    output_list = [display_letter(letter, letter_list) for letter in word]
     output = ' '.join(output_list)
     return output
 
+def display_letter(letter, letter_list, blank_char='_'):
+    """Returns uppercase letter if letter in letter_list, else returns blank_char"""
+    if letter in letter_list:
+        return letter.upper()
+    return blank_char
 
 def is_word_complete(word, letter_list):
     """Returns True if all letters in word are in letter_list"""
