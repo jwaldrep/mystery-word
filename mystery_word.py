@@ -13,7 +13,7 @@ class MysteryWord(object):
         self.difficulty = difficulty
 
     def __str__(self):
-        self.display_word(self.word, self.guesses)
+        return self.display_word(self.word, self.guesses)
 
     def easy_words(self, word_list):
         """Returns list of words with 4-6 characters in word_list"""
