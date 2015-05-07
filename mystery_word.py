@@ -29,6 +29,17 @@ def display_letter(letter, letter_list, blank_char='_'):
         return letter.upper()
     return blank_char
 
+def check_letter(letter, word, guesses):
+    """Returns True if letter is in word and not in guesses
+       Returns False if letter not in words nor guesses
+       Returns None if letter already in guesses
+    """
+    if letter in word and letter not in guesses:
+        return True
+    if letter in guesses:
+        return None
+    return False
+
 def is_word_complete(word, letter_list):
     """Returns True if all letters in word are in letter_list"""
     for letter in word:
