@@ -23,7 +23,7 @@ def choose_difficulty(starting_word_list):
 
 def make_guess():
     guess = ''
-    while (not guess.isalpha()) and len(guess) != 1 :
+    while (not guess.isalpha()) or len(guess) != 1 :
         guess = input('Please guess a letter: ').lower()
 
     guesses.append(guess)
