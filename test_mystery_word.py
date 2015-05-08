@@ -1,20 +1,6 @@
 import mystery_word as mw
 
 game = mw.MysteryWord()
-#game.word = 'calf'
-#game.num_guesses_left = 11
-print('The secret word is "{}""'.format(game.word))
-
-for letter in 'rstlneaioubcdfghjkmpqvwxyz':
-    print('You guessed {}'.format(letter))
-    game.attempt_guess(letter)
-    print(game)
-    if game.check_win() is not None:
-        break
-
-#using above string for guesses
-#'language','cold': win with 1 guess left'
-#'calf': lose with 10 turns, win with 11
 
 game.word_list = ["bird", "calf", "river", "stream", "kneecap",  "cookbook",
              "language", "sneaker", "algorithm", "integration", "brain"]
@@ -86,3 +72,14 @@ def test_is_word_complete():
 
     game.guesses = ["r", "e", "v", "i"]
     assert game.is_word_complete()
+
+def test_winning_game():
+    game = mw.MysteryWord()
+    game.word = 'language'
+    game.quick_play()
+    assert game.check_win() == True
+    assert game.num_guesses_left == 1
+
+    #using above string for guesses
+    #'language','cold': win with 1 guess left'
+    #'calf': lose with 10 turns, win with 11

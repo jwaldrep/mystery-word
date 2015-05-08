@@ -80,3 +80,15 @@ class MysteryWord(object):
         if self.num_guesses_left < 1:
             return False
         return None
+
+    def quick_play(self, silent=False, letters_to_guess='rstlneaioubcdfghjkmpqvwxyz'):
+        if not silent:
+            print('The secret word is "{}""'.format(self.word))
+        for letter in letters_to_guess:
+            if not silent:
+                print('You guessed {}'.format(letter))
+            self.attempt_guess(letter)
+            if not silent:
+                print(self)
+            if self.check_win() is not None:
+                break
