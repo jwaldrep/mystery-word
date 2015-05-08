@@ -68,6 +68,7 @@ class MysteryWord(object):
         """Return False if invalid, otherwise add to guesses list and return True"""
         if self.is_valid_guess(letter) == False:
             return False
+        letter = letter.lower()
         self.guesses.append(letter)
         if letter not in self.word:
             self.num_guesses_left -= 1
@@ -94,10 +95,32 @@ class MysteryWord(object):
                 break
 
 def user_interface(spoiler=False):
+    word_length = 'easy'
+    difficulty = 'easy'
     game = MysteryWord()
     if spoiler:
         print('The secret word is "{}""'.format(game.word))
 
+    def guess_prompt():
+        guess = ''
+        while not game.is_valid_guess(guess):
+            guess = input('Please choose a letter: ').lower()
+        return guess
+
+    def welcome_menu():
+        print('Welcome to Mystery Word!')
+
+    def game_loop():
+        while True:
+            guess = guess_prompt()
+            game.attempt_guess(guess)
+            print(game)
+            if game.check_win() is not None:
+                break
+
+    welcome_menu()
+    print(game)
+    game_loop()
 
 if __name__ == '__main__':
     user_interface(spoiler=True)
