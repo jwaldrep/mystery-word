@@ -93,9 +93,11 @@ class MysteryWord(object):
             if self.check_win() is not None:
                 break
 
-def user_interface():
+def user_interface(spoiler=False):
     game = MysteryWord()
+    if spoiler:
+        print('The secret word is "{}""'.format(game.word))
 
 
 if __name__ == '__main__':
-    user_interface()
+    user_interface(spoiler=True)
