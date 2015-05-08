@@ -57,10 +57,10 @@ class MysteryWord(object):
             return True
         return False
 
-    def is_word_complete(self, word, letter_list):
+    def is_word_complete(self):
         """Returns True if all letters in word are in letter_list"""
-        for letter in word:
-            if letter not in letter_list:
+        for letter in self.word:
+            if letter not in self.guesses:
                 return False
         return True
 
@@ -75,7 +75,7 @@ class MysteryWord(object):
 
     def check_win(self):
         """Return True for win, False for lose, None for neither"""
-        if self.is_word_complete(self.word, self.guesses):
+        if self.is_word_complete():
             return True
         if self.num_guesses_left < 1:
             return False
