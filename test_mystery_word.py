@@ -75,42 +75,39 @@ def test_is_word_complete():
 
 def test_winning_game():
     game = mw.MysteryWord()
-    game.word = 'language'
+    game.word = 'landuade'
     game.quick_play()
     assert game.check_win() == True
     assert game.num_guesses_left == 1
 
 def test_losing_game():
     game = mw.MysteryWord()
-    game.word = 'calf'
+    game.word = 'carbong'
     game.quick_play()
     assert game.check_win() == False
     assert game.num_guesses_left == 0
-    #using default string for guesses
-    #'language','cold': win with 1 guess left'
-    #'calf': lose with 10 turns, win with 11
 
 def test_invalid_guesses():
     game = mw.MysteryWord()
     game.word = 'calf'
 
     game.attempt_guess('x')
-    assert game.num_guesses_left == 9
+    assert game.num_guesses_left == 7
 
     game.attempt_guess('c')
-    assert game.num_guesses_left == 9
+    assert game.num_guesses_left == 7
 
     game.attempt_guess('c')
-    assert game.num_guesses_left == 9
+    assert game.num_guesses_left == 7
 
     game.attempt_guess('C')
-    assert game.num_guesses_left == 9
+    assert game.num_guesses_left == 7
 
     game.attempt_guess('.')
-    assert game.num_guesses_left == 9
+    assert game.num_guesses_left == 7
 
     game.attempt_guess('a')
-    assert game.num_guesses_left == 9
+    assert game.num_guesses_left == 7
 
     game.attempt_guess('d')
-    assert game.num_guesses_left == 8
+    assert game.num_guesses_left == 6

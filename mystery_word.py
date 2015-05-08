@@ -5,7 +5,7 @@ class MysteryWord(object):
     default_word_list = ["bird", "calf", "river", "stream", "kneecap",  "cookbook",
                          "language", "sneaker", "algorithm", "integration", "brain"]
 
-    def __init__(self, word_list=default_word_list, allowed_guesses=10, difficulty='easy_words'):
+    def __init__(self, word_list=default_word_list, allowed_guesses=8, difficulty='easy_words'):
         self.word_list = word_list
         self.word = self.random_word()
         self.guesses = []
@@ -81,6 +81,9 @@ class MysteryWord(object):
         self.guesses.append(letter)
         if letter not in self.word:
             self.num_guesses_left -= 1
+            print('Incorrect guess.')
+        else:
+            print('Correct!')
         return True
 
     def check_win(self):
@@ -109,6 +112,8 @@ def user_interface(spoiler=False):
         guess = ''
         while not game.is_valid_guess(guess):
             guess = input('Please choose a letter: ').lower()
+            if not game.is_valid_guess(guess):
+                print('Invalid letter, try again...')
         return guess
 
     def welcome_menu():
