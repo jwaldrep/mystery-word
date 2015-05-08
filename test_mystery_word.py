@@ -1,11 +1,27 @@
-from mystery_word import *
+import mystery_word as mw
 
-word_list = ["bird", "calf", "river", "stream", "kneecap",  "cookbook",
+game = mw.MysteryWord()
+#game.word = 'calf'
+#game.num_guesses_left = 11
+print('The secret word is "{}""'.format(game.word))
+
+for letter in 'rstlneaioubcdfghjkmpqvwxyz':
+    print('You guessed {}'.format(letter))
+    game.attempt_guess(letter)
+    print(game)
+    if game.check_win() is not None:
+        break
+
+#using above string for guesses
+#'language','cold': win with 1 guess left'
+#'calf': lose with 10 turns, win with 11
+
+game.word_list = ["bird", "calf", "river", "stream", "kneecap",  "cookbook",
              "language", "sneaker", "algorithm", "integration", "brain"]
 
 
 def test_easy_words():
-    assert MysteryWord.easy_words(word_list) == \
+    assert game.easy_words() == \
         ["bird", "calf", "river", "stream", "brain"]
 
 
