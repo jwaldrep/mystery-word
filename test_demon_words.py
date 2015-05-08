@@ -25,6 +25,11 @@ def test_find_word_families():
         '....': ['lazy'],
         '.e..': ['heal', 'best']
         }
+def test_pick_word_family():
+    word_list = ['echo', 'heal', 'best', 'lazy']
+    #pdb.set_trace()
+    word_families = game.find_word_families('....', word_list, 'e')
+    assert game.pick_word_family(word_families, 'e') == ['heal', 'best']
 
 
 '''
