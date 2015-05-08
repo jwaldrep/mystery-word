@@ -42,6 +42,8 @@ class DemonWord(mw.MysteryWord):
         word_families = self.find_word_families(self.regexp, self.word_list, letter)
         self.word_list = self.pick_word_family(word_families, letter)
         self.guesses.append(letter)
+        possible_word = self.word_list[0]
+        self.regexp = self.find_word_family(self.regexp, self.word_list, possible_word)
 
         '''
         if letter not in self.word:
@@ -52,6 +54,7 @@ class DemonWord(mw.MysteryWord):
         return True
         '''
     def find_word_families(self, regexp, word_list, guess):
+        """Returns dictionary"""
         word_families = {}
         family_members = []
         for word in word_list:
@@ -132,6 +135,7 @@ def user_interface(spoiler=False):
             guess = guess_prompt()
             game.attempt_guess(guess)
             print(game)
+            print('Current word list has {} words.'.format(len(game.word_list)))
             if game.check_win() is not None:
                 break
     def play_again():
@@ -150,6 +154,8 @@ def user_interface(spoiler=False):
         print('The secret word is "{}""'.format(game.word))
     print('The Mystery Word contains {} letters.'.format(len(game.regexp)))
     print(game)
+    print('Current word list has {} words.'.format(len(game.word_list)))
+
     game_loop()
     while(play_again()):
         game = DemonWords()
