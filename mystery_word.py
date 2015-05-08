@@ -92,3 +92,10 @@ class MysteryWord(object):
                 print(self)
             if self.check_win() is not None:
                 break
+
+def user_interface():
+    game = MysteryWord()
+
+
+if __name__ == '__main__':
+    user_interface()

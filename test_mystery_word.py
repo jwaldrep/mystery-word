@@ -80,6 +80,12 @@ def test_winning_game():
     assert game.check_win() == True
     assert game.num_guesses_left == 1
 
-    #using above string for guesses
+def test_losing_game():
+    game = mw.MysteryWord()
+    game.word = 'calf'
+    game.quick_play()
+    assert game.check_win() == False
+    assert game.num_guesses_left == 0
+    #using default string for guesses
     #'language','cold': win with 1 guess left'
     #'calf': lose with 10 turns, win with 11
