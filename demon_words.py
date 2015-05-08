@@ -45,12 +45,15 @@ class DemonWord(mw.MysteryWord):
         '''
     def find_word_families(self, regexp, word_list, guess):
         word_families = {}
+        family_members = []
         for word in word_list:
             if guess not in word:
                 word_families[regexp] = [word]
             else:
                 word_family = self.find_word_family(regexp, word, guess)
-                word_families.get(word_family,[]).append(word)
+                family_members = word_families.get(word_family,[])
+                family_members.append(word)
+                word_families[word_family] = family_members
         return word_families
 
     def find_word_family(self, current_regexp, word, guess):

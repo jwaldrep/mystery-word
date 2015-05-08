@@ -1,4 +1,5 @@
 import demon_words as dw
+import pdb
 
 game = dw.DemonWord()
 
@@ -18,6 +19,7 @@ def test_find_word_families():
     word_list = ['lazy']
     assert game.find_word_families('....', word_list, 'e') == {'....': ['lazy']}
     word_list = ['echo', 'heal', 'best', 'lazy']
+    #pdb.set_trace()
     assert game.find_word_families('....', word_list, 'e') == {
         'e...': ['echo'],
         '....': ['lazy'],

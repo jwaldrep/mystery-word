@@ -111,3 +111,6 @@ def test_invalid_guesses():
 
     game.attempt_guess('d')
     assert game.num_guesses_left == 6
+
+    game.attempt_guess(' ')
+    assert game.num_guesses_left == 6
