@@ -14,14 +14,23 @@ class MysteryWord(object):
         self.blank_char = '_'
 
     def __str__(self):
+        alphabet = 'abcdefghijklmnopqrstuvwxyz'
+        available = [letter.upper() for letter in alphabet if letter not in self.guesses]
         output = self.display_word()
         es = '' if self.num_guesses_left == 1 else 'es'
         output += '\n{} guess{} left.'.format(self.num_guesses_left, es)
+        output += '\nAvailable Letters: {}'.format(' '.join(available))
         if self.check_win() == True:
             output += '\nYou win!'
         if self.check_win() == False:
-            output += '\nYou lose!'
+            output += '\nYou lose! The Mystery Word was "{}"'.format(self.word)
         return output
+
+    def import_word_list(self, filename):
+        self.word_list = []
+        with open(filename) as fn:
+            for line in fn:
+                self.word_list.append(line.strip().lower())
 
     def easy_words(self):
         """Returns list of words with 4-6 characters in word_list"""
@@ -95,11 +104,6 @@ class MysteryWord(object):
                 break
 
 def user_interface(spoiler=False):
-    word_length = 'easy'
-    difficulty = 'easy'
-    game = MysteryWord()
-    if spoiler:
-        print('The secret word is "{}""'.format(game.word))
 
     def guess_prompt():
         guess = ''
@@ -110,6 +114,18 @@ def user_interface(spoiler=False):
     def welcome_menu():
         print('Welcome to Mystery Word!')
 
+    def word_length_menu():
+        valid_choices = 'sml'
+        choice = ' '
+        while choice not in valid_choices:
+            choice = input('Please choose word length: [S]hort [M]edium or [L]ong: ').lower()
+        if choice == 's':
+            game.word = random.choice(game.easy_words())
+        if choice == 'm':
+            game.word = random.choice(game.medium_words())
+        if choice == 'l':
+            game.word = random.choice(game.hard_words())
+
     def game_loop():
         while True:
             guess = guess_prompt()
@@ -117,10 +133,35 @@ def user_interface(spoiler=False):
             print(game)
             if game.check_win() is not None:
                 break
+    def play_again():
+        y_n = input('Play again [Y/n]?').lower()
+        if y_n == 'n':
+            return False
+        else:
+            return True
 
+    word_length = 'easy'
+    difficulty = 'easy'
+
+    game = MysteryWord()
+    game.import_word_list('/usr/share/dict/words')
     welcome_menu()
+    word_length_menu()
+    if spoiler:
+        print('The secret word is "{}""'.format(game.word))
+    print('The Mystery Word contains {} letters.'.format(len(game.word)))
     print(game)
     game_loop()
+    while(play_again()):
+        game = MysteryWord()
+        game.import_word_list('/usr/share/dict/words')
+
+        word_length_menu()
+        if spoiler:
+            print('The secret word is "{}""'.format(game.word))
+        print('The Mystery Word contains {} letters.'.format(len(game.word)))
+        print(game)
+        game_loop()
 
 if __name__ == '__main__':
     user_interface(spoiler=True)
