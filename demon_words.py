@@ -77,7 +77,7 @@ class DemonWord(mw.MysteryWord):
             if len(value) > max:
                 max = len(value)
                 word_family = key
-        return word_families[key]
+        return word_families[word_family]
 
 
 def user_interface(spoiler=False):
