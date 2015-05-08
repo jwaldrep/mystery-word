@@ -35,6 +35,7 @@ class DemonWord(mw.MysteryWord):
 
     def attempt_guess(self, letter):
         """Return False if invalid, otherwise add to guesses list and return True"""
+        #pdb.set_trace()
         if self.is_valid_guess(letter) == False:
             return False
         letter = letter.lower()
@@ -72,11 +73,11 @@ class DemonWord(mw.MysteryWord):
             #assert game.find_word_family('.....', 'river', 'r') == 'r...r'
         #output_list = [self.display_regexp_char(letter, word) for letter in word]
         new_regexp = list(current_regexp)
+        print('current_regexp: {}, word: {}'.format(repr(current_regexp), repr(word)))
         for slot, char  in enumerate(current_regexp):
             #pdb.set_trace()
             if word[slot] == guess:
                 new_regexp[slot] = guess
-
         output = ''.join(new_regexp)
         return output
 

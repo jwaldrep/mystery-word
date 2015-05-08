@@ -14,6 +14,10 @@ def test_filter_word_list():
 
 def test_find_word_family():
     assert game.find_word_family('.....', 'river', 'r') == 'r...r'
+    assert game.find_word_family('.....', 'river', 'x') == '.....'
+    assert game.find_word_family('r...r', 'river', 'v') == 'r.v.r'
+    assert game.find_word_family('r...r', 'river', 'x') == 'r...r'
+    assert game.find_word_family('river', 'river', 'i') == 'river'
 
 def test_find_word_families():
     word_list = ['lazy']
@@ -32,6 +36,17 @@ def test_pick_word_family():
     for _ in range(100):
         assert game.pick_word_family(word_families, 'e') == ['heal', 'best']
 
+def test_set_word_length():
+    game = dw.DemonWord()
+    game.set_word_length(4)
+    assert game.regexp == '....'
+
+def test_attempt_guess():
+    game = dw.DemonWord()
+    game.set_word_length(4)
+    game.word_list = ['echo', 'heal', 'best', 'lazy']
+    game.attempt_guess('e')
+    assert self.regexp == '.e..'
 
 '''
 def find_word_family(self, current_regexp, word, letter):
