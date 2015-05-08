@@ -43,13 +43,15 @@ class DemonWord(mw.MysteryWord):
             print('Correct!')
         return True
         '''
-    def divide_word_list(self, regexp, word_list, letter):
+    def find_word_families(self, regexp, word_list, guess):
         word_families = {}
         for word in word_list:
-            if letter not in word_list:
-                word_families[regexp] = word
+            if guess not in word:
+                word_families[regexp] = [word]
             else:
-                word_family = find_word_family()
+                word_family = self.find_word_family(regexp, word, guess)
+                word_families.get(word_family,[]).append(word)
+        return word_families
 
     def find_word_family(self, current_regexp, word, guess):
         """Returns a string showing which letters from letter_list are in word"""
@@ -63,11 +65,6 @@ class DemonWord(mw.MysteryWord):
         output = ''.join(new_regexp)
         return output
 
-    def display_regexp_char(self, letter, word):
-        """Returns lowercase letter if letter in guesses, else returns blank_char"""
-        if letter in word:
-            return letter.lower()
-        return '.'
 
 
 def user_interface(spoiler=False):

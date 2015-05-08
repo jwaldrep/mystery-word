@@ -14,9 +14,16 @@ def test_filter_word_list():
 def test_find_word_family():
     assert game.find_word_family('.....', 'river', 'r') == 'r...r'
 
-def test_display_regexp_char():
-    assert game.display_regexp_char('r', 'river') == 'r'
-    assert game.display_regexp_char('x', 'river') == '.'
+def test_find_word_families():
+    word_list = ['lazy']
+    assert game.find_word_families('....', word_list, 'e') == {'....': ['lazy']}
+    word_list = ['echo', 'heal', 'best', 'lazy']
+    assert game.find_word_families('....', word_list, 'e') == {
+        'e...': ['echo'],
+        '....': ['lazy'],
+        '.e..': ['heal', 'best']
+        }
+
 
 '''
 def find_word_family(self, current_regexp, word, letter):
