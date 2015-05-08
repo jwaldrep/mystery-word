@@ -33,6 +33,8 @@ class DemonWord(mw.MysteryWord):
         if self.is_valid_guess(letter) == False:
             return False
         letter = letter.lower()
+        word_families = self.find_word_families(self.regexp, self.word_list, letter)
+        self.word_list = self.pick_word_families(word_families, letter)
         self.guesses.append(letter)
 
         '''
