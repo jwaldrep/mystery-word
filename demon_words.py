@@ -1,8 +1,10 @@
 
 import mystery_word as mw
 
+import pdb
 import random
 import re
+
 
 #length of word is decided at the beginning
 #   this filters the dictionary
@@ -16,10 +18,13 @@ class DemonWord(mw.MysteryWord):
         super(DemonWord, self).__init__()
         self.word_length = 6
         self.regexp = '.'*6
+        self.word = None
 
 
     def set_word_length(self, word_length=6):
         self.word_length = word_length
+        self.regexp = '.' * word_length
+        self.word_list = self.filter_word_list(self.word_list, self.regexp)
 
     def filter_word_list(self, word_list, regexp):
         """Regexp is any character that has been guessed or . if location is unassigned"""
@@ -33,8 +38,9 @@ class DemonWord(mw.MysteryWord):
         if self.is_valid_guess(letter) == False:
             return False
         letter = letter.lower()
+
         word_families = self.find_word_families(self.regexp, self.word_list, letter)
-        self.word_list = self.pick_word_families(word_families, letter)
+        self.word_list = self.pick_word_family(word_families, letter)
         self.guesses.append(letter)
 
         '''
@@ -64,6 +70,7 @@ class DemonWord(mw.MysteryWord):
         #output_list = [self.display_regexp_char(letter, word) for letter in word]
         new_regexp = list(current_regexp)
         for slot, char  in enumerate(current_regexp):
+            #pdb.set_trace()
             if word[slot] == guess:
                 new_regexp[slot] = guess
 
@@ -80,6 +87,19 @@ class DemonWord(mw.MysteryWord):
                 max = len(value)
                 word_family = key
         return word_families[word_family]
+
+    def display_word(self):
+        """Returns a string showing which letters from letter_list are in word"""
+        output_list = [self.display_letter(letter) for letter in self.regexp]
+        output = ' '.join(output_list)
+        return output
+
+    def is_word_complete(self):
+        """Returns True if all letters in word are in letter_list"""
+        for letter in self.regexp:
+            if letter == '.':
+                return False
+        return True
 
 
 def user_interface(spoiler=False):
@@ -101,11 +121,11 @@ def user_interface(spoiler=False):
         while choice not in valid_choices:
             choice = input('Please choose word length: [S]hort [M]edium or [L]ong: ').lower()
         if choice == 's':
-            game.word = '.' * random.randrange(4,7)
+            game.set_word_length(random.randrange(4,7))
         if choice == 'm':
-            game.word = '.' * random.randrange(6,9)
+            game.set_word_length(random.randrange(6,9))
         if choice == 'l':
-            game.word = '.' * random.randrange(8,12)
+            game.set_word_length(random.randrange(8,12))
 
     def game_loop():
         while True:
@@ -128,7 +148,7 @@ def user_interface(spoiler=False):
     word_length_menu()
     if spoiler:
         print('The secret word is "{}""'.format(game.word))
-    print('The Mystery Word contains {} letters.'.format(len(game.word)))
+    print('The Mystery Word contains {} letters.'.format(len(game.regexp)))
     print(game)
     game_loop()
     while(play_again()):
@@ -138,7 +158,7 @@ def user_interface(spoiler=False):
         word_length_menu()
         if spoiler:
             print('The secret word is "{}'.format(game.word))
-        print('The Mystery Word contains {} letters.'.format(len(game.word)))
+        print('The Mystery Word contains {} letters.'.format(len(game.regexp)))
         print(game)
         game_loop()
 
