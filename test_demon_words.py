@@ -6,13 +6,17 @@ game = dw.DemonWord()
 game.word_list = ["bird", "calf", "river", "stream", "kneecap",  "cookbook",
              "language", "sneaker", "algorithm", "integration", "brain"]
 
+def test_setup():
+    game = dw.DemonWord()
 
 def test_filter_word_list():
+    test_setup()
     filtered = game.filter_word_list(game.word_list, regexp='.'*5) #[a-z][a-z][a-z][a-z][a-z]')
 
     assert filtered == ["river", "brain"]
 
 def test_find_word_family():
+    test_setup()
     assert game.find_word_family('.....', 'river', 'r') == 'r...r'
     assert game.find_word_family('.....', 'river', 'x') == '.....'
     assert game.find_word_family('r...r', 'river', 'v') == 'r.v.r'
@@ -20,6 +24,7 @@ def test_find_word_family():
     assert game.find_word_family('river', 'river', 'i') == 'river'
 
 def test_find_word_families():
+    test_setup()
     word_list = ['lazy']
     assert game.find_word_families('....', word_list, 'e') == {'....': ['lazy']}
     word_list = ['echo', 'heal', 'best', 'lazy']
@@ -30,19 +35,21 @@ def test_find_word_families():
         '.e..': ['heal', 'best']
         }
 def test_pick_word_family():
+    test_setup()
     word_list = ['echo', 'heal', 'best', 'lazy']
     #pdb.set_trace()
     word_families = game.find_word_families('....', word_list, 'e')
     for _ in range(100):
         assert game.pick_word_family(word_families, 'e') == ['heal', 'best']
 
+
 def test_set_word_length():
-    game = dw.DemonWord()
+    test_setup()
     game.set_word_length(4)
     assert game.regexp == '....'
 
 def test_attempt_guess():
-    game = dw.DemonWord()
+    test_setup()
     game.set_word_length(4)
     game.word_list = ['echo', 'heal', 'best', 'lazy']
     game.attempt_guess('e')
