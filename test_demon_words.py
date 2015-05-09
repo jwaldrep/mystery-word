@@ -46,7 +46,7 @@ def test_attempt_guess():
     game.set_word_length(4)
     game.word_list = ['echo', 'heal', 'best', 'lazy']
     game.attempt_guess('e')
-    assert self.regexp == '.e..'
+    assert game.regexp == '.e..'
 
 '''
 def find_word_family(self, current_regexp, word, letter):

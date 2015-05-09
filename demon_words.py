@@ -44,7 +44,7 @@ class DemonWord(mw.MysteryWord):
         self.word_list = self.pick_word_family(word_families, letter)
         self.guesses.append(letter)
         possible_word = self.word_list[0]
-        self.regexp = self.find_word_family(self.regexp, self.word_list, possible_word)
+        self.regexp = self.find_word_family(self.regexp, possible_word, letter)
 
         '''
         if letter not in self.word:
@@ -69,7 +69,7 @@ class DemonWord(mw.MysteryWord):
         return word_families
 
     def find_word_family(self, current_regexp, word, guess):
-        """Returns a string showing which letters from letter_list are in word"""
+        """Returns the regexp which would leave word in play with given guess letter"""
             #assert game.find_word_family('.....', 'river', 'r') == 'r...r'
         #output_list = [self.display_regexp_char(letter, word) for letter in word]
         new_regexp = list(current_regexp)
