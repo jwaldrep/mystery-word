@@ -48,17 +48,21 @@ class DemonWord(mw.MysteryWord):
         letter = letter.lower()
 
         old_regexp = self.regexp
-        word_families = self.find_word_families(self.regexp, self.word_list, letter)
-        self.word_list = self.pick_word_family(word_families, letter)
+        self.word_families = self.find_word_families(self.regexp, self.word_list, letter)
+        self.word_list = self.pick_word_family(self.word_families, letter)
         self.guesses.append(letter)
         possible_word = self.word_list[0]
         self.regexp = self.find_word_family(self.regexp, possible_word, letter)
 
         if self.regexp == old_regexp:
-            print('Incorrect guess.')
+            print('Incorrect guess.\n')
             self.num_guesses_left -= 1
         else:
-            print('Correct!')
+            print('Correct!\n')
+
+        if self.check_win() == False:
+            self.word = self.pick_single_word() #The final lie
+
         return True
 
     def find_word_families(self, regexp, word_list, guess):
@@ -105,7 +109,42 @@ class DemonWord(mw.MysteryWord):
         if self.debug_output:
             print('\nword_family: {}, return word list: {}'.format(repr(word_family), repr(word_families[word_family])))
         #consider adding check if it is the last turn to force a loss
+
         return word_families[word_family]
+
+    def pick_best_letter(self, lie=False):
+        """Recommend best letter for user to pick if lie=False, otherwise worst"""
+        alphabet = 'abcdefghijklmnopqrstuvwxyz'
+        available = [letter for letter in alphabet if letter not in self.guesses]
+        letter_scores = {}
+        for letter in available:
+            ##word_families = self.find_word_families(self.regexp, self.word_list, letter)
+            ##print('word_families: {}'.format(self.word_families))
+            ##letter_scores[letter] = ([word_families[x] for x in word_families])
+            #possible_word = self.word_list[0]
+            #potential_regexp = self.find_word_family(self.regexp, possible_word, letter)
+            #potential_wordlist = self.filter_word_list(self.word_list, potential_regexp)
+            #letter_scores[letter] = len(potential_wordlist)
+            potential_word_families = self.find_word_families(self.regexp, self.word_list, letter)
+            potential_word_list = self.pick_word_family(potential_word_families, letter)
+            #possible_word = potential_word_list[0]
+            #possible_regexp = self.find_word_family(self.regexp, possible_word, letter)
+
+            letter_scores[letter] = len(potential_word_list)
+        if self.debug_output:
+            print('letter scores: {}'.format(letter_scores))
+        max_score = max([letter_scores[letter] for letter in letter_scores])
+        min_score = min([letter_scores[letter] for letter in letter_scores])
+
+        for letter in letter_scores:
+            if lie==True and letter_scores[letter] == max_score:
+                self.hint = letter
+
+            elif lie==False and letter_scores[letter] == min_score:
+                self.hint = letter
+
+                if len(self.word_list) < 2:
+                    self.hint = letter #wrong
 
     def display_word(self):
         """Returns a string showing which letters from letter_list are in word"""
@@ -120,8 +159,26 @@ class DemonWord(mw.MysteryWord):
                 return False
         return True
 
+    def pick_single_word(self):
+        return random.choice(self.word_list)
 
-def user_interface(debug_output=False):
+    def quick_play(self, silent=False, lying_hint=True):
+        """Not yet implemented"""
+        pass
+        '''
+        for _ in range(self.num_guesses_left):
+            letter = self.pick_best_letter(lie=lying_hint)
+            if not silent:
+                print('You guessed {}'.format(letter))
+            self.attempt_guess(letter)
+            if not silent:
+                print(self)
+            if self.check_win() is not None:
+                break
+        '''
+
+
+def user_interface(show_hints=False):
     """Gets input from user to conduct a DemonWords game
        debug_output=True provides prints extra information about each turn
     """
@@ -153,8 +210,10 @@ def user_interface(debug_output=False):
             guess = guess_prompt()
             game.attempt_guess(guess)
             print(game)
-            if show_hints:
-                print('Current word list has {} words.'.format(len(game.word_list)), end='')
+            if show_hints and game.check_win() is None:
+                game.pick_best_letter()
+                print('Current word list has {} words.  '.format(len(game.word_list)), end='')
+                print("Might I recommend you try '{}'?".format(game.hint))
             print(''.format())
             if game.check_win() is not None:
                 break
@@ -172,8 +231,10 @@ def user_interface(debug_output=False):
     word_length_menu()
     print('The Mystery Word contains {} letters.'.format(len(game.regexp)))
     print(game)
-    if show_hints:
-        print('Current word list has {} words.'.format(len(game.word_list)))
+    if show_hints and game.check_win() is None:
+        game.pick_best_letter()
+        print('Current word list has {} words.  '.format(len(game.word_list)), end='')
+        print("Might I recommend you try '{}'?".format(game.hint))
 
     game_loop()
     while(play_again()):
