@@ -59,9 +59,9 @@ class DemonWord(mw.MysteryWord):
         word_families = {}
         family_members = []
         for word in word_list:
-            if guess not in word:
+            if False: #guess not in word:
                 word_families[regexp] = [word]
-            else:
+            elif True:
                 word_family = self.find_word_family(regexp, word, guess)
                 family_members = word_families.get(word_family,[])
                 family_members.append(word)
@@ -124,7 +124,8 @@ def user_interface(spoiler=False):
     def word_length_menu():
         valid_choices = 'sml'
         choice = ' '
-        while False:#choice not in valid_choices:
+        while False:
+            #choice not in valid_choices:
             choice = input('Please choose word length: [S]hort [M]edium or [L]ong: ').lower()
         if choice == 's':
             game.set_word_length(random.randrange(4,7))
