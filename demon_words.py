@@ -85,12 +85,13 @@ class DemonWord(mw.MysteryWord):
         """Picks 'hardest' word list based on word_families dictionary"""
         max = 0
         word_family = ''
-
+        print('word_families:{}'.format(word_families))
         for key, value in word_families.items():
             if len(value) > max:
                 max = len(value)
                 word_family = key
-        print('word_family: {}, return word list: {}'.format(repr(word_family), repr(word_families[word_family])))
+            print('{},'.format(len(value)),end='')
+        print('\nword_family: {}, return word list: {}'.format(repr(word_family), repr(word_families[word_family])))
         return word_families[word_family]
 
     def display_word(self):
@@ -123,7 +124,7 @@ def user_interface(spoiler=False):
     def word_length_menu():
         valid_choices = 'sml'
         choice = ' '
-        while choice not in valid_choices:
+        while False:#choice not in valid_choices:
             choice = input('Please choose word length: [S]hort [M]edium or [L]ong: ').lower()
         if choice == 's':
             game.set_word_length(random.randrange(4,7))
@@ -131,13 +132,15 @@ def user_interface(spoiler=False):
             game.set_word_length(random.randrange(6,9))
         if choice == 'l':
             game.set_word_length(random.randrange(8,12))
+        game.set_word_length(4)
 
     def game_loop():
         while True:
             guess = guess_prompt()
             game.attempt_guess(guess)
             print(game)
-            print('Current word list has {} words.'.format(len(game.word_list)))
+            print('Current word list has {} words.'.format(len(game.word_list)), end='')
+            print(''.format())
             if game.check_win() is not None:
                 break
     def play_again():
