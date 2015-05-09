@@ -13,13 +13,13 @@ import re
 #the placement of the guessed characters is based on maximizing the available subgroup
 
 class DemonWord(mw.MysteryWord):
-    """docstring for DemonWord"""
+    """DemonWord class is a mystery word game which evilly dodges user guesses"""
     def __init__(self, word_length=6):
         super(DemonWord, self).__init__()
         self.word_length = 6
         self.regexp = '.'*6
         self.word = None
-
+        self.debug_output = False
 
     def set_word_length(self, word_length=6):
         self.word_length = word_length
@@ -27,14 +27,18 @@ class DemonWord(mw.MysteryWord):
         self.word_list = self.filter_word_list(self.word_list, self.regexp)
 
     def filter_word_list(self, word_list, regexp):
-        """Regexp is any character that has been guessed or . if location is unassigned"""
+        """Converts are simplified regexp to proper python regexp syntax
+           Regexp consists of any character that has been correctly guessed or . if location is unassigned
+        """
         word_list = [word for word in word_list if len(word) == len(regexp)]
         regexp = ''.join(['[a-z]' if char == '.' else char for char in regexp])
         regextp = ' ' + regexp + ' '
         return re.findall(regexp, ' '.join(word_list))
 
     def attempt_guess(self, letter):
-        """Return False if invalid, otherwise add to guesses list and return True"""
+        """Return False if invalid, otherwise add to guesses list and return True
+           Because we're in evil mode, this also triggers re-evaluation of the current word list
+        """
         #pdb.set_trace()
         if self.is_valid_guess(letter) == False:
             return False
@@ -55,17 +59,17 @@ class DemonWord(mw.MysteryWord):
         return True
 
     def find_word_families(self, regexp, word_list, guess):
-        """Returns dictionary"""
+        """Given current regexp game state, the current word list, and letter guess,
+            returns dictionary containing lists of words indexed by the regexp which
+            would include them (if that word family is chosen)
+        """
         word_families = {}
         family_members = []
         for word in word_list:
-            if False: #guess not in word:
-                word_families[regexp] = [word]
-            elif True:
-                word_family = self.find_word_family(regexp, word, guess)
-                family_members = word_families.get(word_family,[])
-                family_members.append(word)
-                word_families[word_family] = family_members
+            word_family = self.find_word_family(regexp, word, guess)
+            family_members = word_families.get(word_family,[])
+            family_members.append(word)
+            word_families[word_family] = family_members
         return word_families
 
     def find_word_family(self, current_regexp, word, guess):
@@ -73,7 +77,8 @@ class DemonWord(mw.MysteryWord):
             #assert game.find_word_family('.....', 'river', 'r') == 'r...r'
         #output_list = [self.display_regexp_char(letter, word) for letter in word]
         new_regexp = list(current_regexp)
-        print('current_regexp: {}, word: {}'.format(repr(current_regexp), repr(word)))
+        if self.debug_output:
+            print('current_regexp: {}, word: {}'.format(repr(current_regexp), repr(word)))
         for slot, char  in enumerate(current_regexp):
             #pdb.set_trace()
             if word[slot] == guess:
@@ -85,13 +90,17 @@ class DemonWord(mw.MysteryWord):
         """Picks 'hardest' word list based on word_families dictionary"""
         max = 0
         word_family = ''
-        print('word_families:{}'.format(word_families))
+        if self.debug_output:
+            print('word_families:{}'.format(word_families))
         for key, value in word_families.items():
             if len(value) > max:
                 max = len(value)
                 word_family = key
-            print('{},'.format(len(value)),end='')
-        print('\nword_family: {}, return word list: {}'.format(repr(word_family), repr(word_families[word_family])))
+            if self.debug_output:
+                print('{},'.format(len(value)),end='')
+        if self.debug_output:
+            print('\nword_family: {}, return word list: {}'.format(repr(word_family), repr(word_families[word_family])))
+        #consider adding check if it is the last turn to force a loss
         return word_families[word_family]
 
     def display_word(self):
@@ -108,8 +117,10 @@ class DemonWord(mw.MysteryWord):
         return True
 
 
-def user_interface(spoiler=False):
-
+def user_interface(debug_output=False):
+    """Gets input from user to conduct a DemonWords game
+       debug_output=True provides prints extra information about each turn
+    """
     def guess_prompt():
         guess = ''
         while not game.is_valid_guess(guess):
@@ -124,8 +135,7 @@ def user_interface(spoiler=False):
     def word_length_menu():
         valid_choices = 'sml'
         choice = ' '
-        while False:
-            #choice not in valid_choices:
+        while choice not in valid_choices:
             choice = input('Please choose word length: [S]hort [M]edium or [L]ong: ').lower()
         if choice == 's':
             game.set_word_length(random.randrange(4,7))
@@ -133,14 +143,14 @@ def user_interface(spoiler=False):
             game.set_word_length(random.randrange(6,9))
         if choice == 'l':
             game.set_word_length(random.randrange(8,12))
-        game.set_word_length(4)
 
     def game_loop():
         while True:
             guess = guess_prompt()
             game.attempt_guess(guess)
             print(game)
-            print('Current word list has {} words.'.format(len(game.word_list)), end='')
+            if show_hints:
+                print('Current word list has {} words.'.format(len(game.word_list)), end='')
             print(''.format())
             if game.check_win() is not None:
                 break
@@ -156,11 +166,10 @@ def user_interface(spoiler=False):
     game.import_word_list('/usr/share/dict/words')
     welcome_menu()
     word_length_menu()
-    if spoiler:
-        print('The secret word is "{}""'.format(game.word))
     print('The Mystery Word contains {} letters.'.format(len(game.regexp)))
     print(game)
-    print('Current word list has {} words.'.format(len(game.word_list)))
+    if show_hints:
+        print('Current word list has {} words.'.format(len(game.word_list)))
 
     game_loop()
     while(play_again()):
@@ -168,11 +177,9 @@ def user_interface(spoiler=False):
         game.import_word_list('/usr/share/dict/words')
 
         word_length_menu()
-        if spoiler:
-            print('The secret word is "{}'.format(game.word))
         print('The Mystery Word contains {} letters.'.format(len(game.regexp)))
         print(game)
         game_loop()
 
 if __name__ == '__main__':
-    user_interface(spoiler=True)
+    user_interface(show_hints=True)
