@@ -84,12 +84,13 @@ class DemonWord(mw.MysteryWord):
     def pick_word_family(self, word_families, guess='a'):
         """Picks 'hardest' word list based on word_families dictionary"""
         max = 0
-        word_family = ['']
+        word_family = ''
 
         for key, value in word_families.items():
             if len(value) > max:
                 max = len(value)
                 word_family = key
+        print('word_family: {}, return word list: {}'.format(repr(word_family), repr(word_families[word_family])))
         return word_families[word_family]
 
     def display_word(self):
