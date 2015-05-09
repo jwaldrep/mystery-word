@@ -20,6 +20,9 @@ class DemonWord(mw.MysteryWord):
         self.regexp = '.'*6
         self.word = None
         self.debug_output = False
+        self.hint = ''
+        self.word_families = {}
+        self.word_list = ['echo', 'heal', 'best', 'lazy']
 
     def set_word_length(self, word_length=6):
         self.word_length = word_length
@@ -93,6 +96,7 @@ class DemonWord(mw.MysteryWord):
         if self.debug_output:
             print('word_families:{}'.format(word_families))
         for key, value in word_families.items():
+            #Refactor this with a lambda
             if len(value) > max:
                 max = len(value)
                 word_family = key

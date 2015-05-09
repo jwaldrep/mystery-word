@@ -62,6 +62,22 @@ def test_attempt_guess():
     game.attempt_guess('e')
     assert game.regexp == '.e..'
 
+def test_pick_best_letter():
+    test_setup()
+    game.word_list = ['echo', 'heal', 'best', 'lazy']
+    game.attempt_guess('x')
+    for _ in range(1000):
+        game.pick_best_letter()
+        assert game.hint in 'hal'
+
+    game.word_list = ['heal', 'herd']
+    for _ in range(1000):
+        game.pick_best_letter(lie=True)
+        assert game.hint in 'x'
+    for _ in range(1000):
+        game.pick_best_letter(lie=True)
+        assert game.hint in 'x'
+
 '''
 def find_word_family(self, current_regexp, word, letter):
     """Returns a string showing which letters from letter_list are in word"""
