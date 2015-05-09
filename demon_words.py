@@ -40,20 +40,20 @@ class DemonWord(mw.MysteryWord):
             return False
         letter = letter.lower()
 
+        old_regexp = self.regexp
         word_families = self.find_word_families(self.regexp, self.word_list, letter)
         self.word_list = self.pick_word_family(word_families, letter)
         self.guesses.append(letter)
         possible_word = self.word_list[0]
         self.regexp = self.find_word_family(self.regexp, possible_word, letter)
 
-        '''
-        if letter not in self.word:
-            self.num_guesses_left -= 1
+        if self.regexp == old_regexp:
             print('Incorrect guess.')
+            self.num_guesses_left -= 1
         else:
             print('Correct!')
         return True
-        '''
+
     def find_word_families(self, regexp, word_list, guess):
         """Returns dictionary"""
         word_families = {}
@@ -159,7 +159,7 @@ def user_interface(spoiler=False):
 
     game_loop()
     while(play_again()):
-        game = DemonWords()
+        game = DemonWord()
         game.import_word_list('/usr/share/dict/words')
 
         word_length_menu()
