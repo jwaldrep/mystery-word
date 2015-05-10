@@ -13,16 +13,25 @@ import re
 #the placement of the guessed characters is based on maximizing the available subgroup
 
 class DemonWord(mw.MysteryWord):
-    """DemonWord class is a mystery word game which evilly dodges user guesses"""
-    def __init__(self, word_length=6):
+    """DemonWord class is a mystery word game which evilly dodges user guesses
+       word_length is the number of letters in word to guess
+       difficulty is 'easy'/'medium'/'hard'
+
+            easy = keep words in word list using guessed letter if at all possible
+            medium = normal hangman game, computer picks a level
+            hard = computer dodges your guesses, always maximizing the number of possible words
+            evil = same as hard, but hints are misleading
+    """
+    def __init__(self, word_length=6, difficulty='hard'):
         super(DemonWord, self).__init__()
         self.word_length = 6
         self.regexp = '.'*6
         self.word = None
-        self.debug_output = True
+        self.debug_output = False
         self.hint = ''
         self.word_families = {}
         self.word_list = ['echo', 'heal', 'best', 'lazy']
+        self.difficulty = difficulty
 
     def set_word_length(self, word_length=6):
         self.word_length = word_length
@@ -201,7 +210,7 @@ class DemonWord(mw.MysteryWord):
         '''
 
 
-def user_interface(show_hint=False, lying_hints=False, show_debug_output=True):
+def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
     """Gets input from user to conduct a DemonWords game
        show_hint=True shows hints at each turn
        lying_hints=True shows hints that make it harder to win
@@ -250,7 +259,7 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=True):
 
     def show_hints():
         if game.check_win() is None:
-            game.pick_best_letter()
+            game.pick_best_letter(lying_hints)
             print('Current word list has {} words.  '.format(len(game.word_list)), end='')
             print("Might I recommend you try '{}'?".format(game.hint))
 
@@ -271,6 +280,8 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=True):
     while(play_again()):
         game = DemonWord()
         game.import_word_list('/usr/share/dict/words')
+        if game.debug_output:
+            game.word_list = game.word_list[:1000]
 
         word_length_menu()
         print('The Mystery Word contains {} letters.'.format(len(game.regexp)))
@@ -280,4 +291,4 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=True):
         game_loop()
 
 if __name__ == '__main__':
-    user_interface(show_hint=True, lying_hints=False, show_debug_output=True)
+    user_interface(show_hint=True, lying_hints=False, show_debug_output=False)
