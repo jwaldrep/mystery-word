@@ -22,7 +22,7 @@ def choose_difficulty(starting_word_list):
     level = levels[selection]
     return level(starting_word_list)
 
-def make_guess(word, word_list):
+def query_letter(): #make_guess(word, word_list):
     guess = ''
     while (not guess.isalpha()) or len(guess) != 1 :
         guess = input('Please guess a letter: ').lower()
@@ -31,14 +31,16 @@ def make_guess(word, word_list):
     if is_good_guess == None:
         print('You already guessed that!')
         guess = input('Please guess a letter: ').lower()
-        
+
 
     #guesses.append(guess)
     return is_good_guess
 
 def get_starting_word_list(filename='/usr/share/dict/words'):
     """Takes filename and filters into list of lowercase words"""
-    pass
+    with open(filename) as my_file:
+        for line in my_file:
+            pass
 
 if __name__ == '__main__':
     word_list = ["bird", "calf", "river", "stream", "kneecap",  "cookbook",
