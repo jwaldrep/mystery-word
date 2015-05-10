@@ -22,7 +22,7 @@ class DemonWord(mw.MysteryWord):
             hard = computer dodges your guesses, always maximizing the number of possible words
             evil = same as hard, but hints are misleading
     """
-    def __init__(self, word_length=6, difficulty='medium'):
+    def __init__(self, word_length=6, difficulty='easy'):
         super(DemonWord, self).__init__()
         self.word_length = 6
         self.regexp = '.'*6
@@ -32,6 +32,7 @@ class DemonWord(mw.MysteryWord):
         self.word_families = {}
         self.word_list = ['echo', 'heal', 'best', 'lazy']
         self.difficulty = difficulty
+        self.current_guess = ''
 
     def set_word_length(self, word_length=6):
         self.word_length = word_length
@@ -49,8 +50,12 @@ class DemonWord(mw.MysteryWord):
 
     def attempt_guess(self, letter):
         """Return False if invalid, otherwise add to guesses list and return True
-           Because we're in evil mode, this also triggers re-evaluation of the current word list
+           This also triggers re-evaluation of the current word list
         """
+        if self.difficulty == 'easy':  #irrelevant in medium/normal mode
+            evil = False
+        else:
+            evil = True
         #pdb.set_trace()
         if self.is_valid_guess(letter) == False:
             return False
@@ -58,7 +63,7 @@ class DemonWord(mw.MysteryWord):
 
         old_regexp = self.regexp
         self.word_families = self.find_word_families(self.regexp, self.word_list, letter)
-        self.word_list = self.pick_word_family(self.word_families, letter)
+        self.word_list = self.pick_word_family(self.word_families, letter, evil)
         self.guesses.append(letter)
         possible_word = self.word_list[0]
         self.regexp = self.find_word_family(self.regexp, possible_word, letter)
@@ -102,10 +107,14 @@ class DemonWord(mw.MysteryWord):
         output = ''.join(new_regexp)
         return output
 
-    def pick_word_family(self, word_families, guess='a'):
+    def pick_word_family(self, word_families, guess='a', evil=True):
         """Picks 'hardest' word list based on word_families dictionary"""
         max = 0
         word_family = ''
+        if (not evil) and len(word_families) > 1:
+            #if self.current_guess in word_families: #if guessed letter is somewhere in the keys
+            del(word_families[self.regexp])   #remove incorrect guesses as an option
+
         if self.debug_output:
             print('word_families:{}'.format(word_families))
         for key, value in word_families.items():
@@ -134,8 +143,8 @@ class DemonWord(mw.MysteryWord):
             self.hint = random.choice(available_hits)
 
 #+Add check for all letter scores are 1 or len(word_list)<3
-#Add normal non-evil mode where word list is filtered to 1 long
-#Add easy mode where only check is to guarantee that choice is in list if possible (and has largest list)
+#+Add normal non-evil mode where word list is filtered to 1 long
+#+Add easy mode where only check is to guarantee that choice is in list if possible (and has largest list)
         if len(self.word_list) < 3:
             simple_pick()
             return
@@ -222,6 +231,7 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
             guess = input('Please choose a letter: ').lower()
             if not game.is_valid_guess(guess):
                 print('Invalid letter, try again...')
+        game.current_guess = guess
         return guess
 
     def welcome_menu():
