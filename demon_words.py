@@ -7,12 +7,6 @@ import re
 import sys
 
 
-#length of word is decided at the beginning
-#   this filters the dictionary
-#word should only consist of the blanks(.) and placed letters
-#available_words should consist of all words which match the current regular expression
-#the placement of the guessed characters is based on maximizing the available subgroup
-
 class DemonWord(mw.MysteryWord):
     """DemonWord class is a mystery word game which evilly dodges user guesses
        word_length is the number of letters in word to guess
@@ -24,6 +18,7 @@ class DemonWord(mw.MysteryWord):
             evil = same as hard, but hints are misleading
     """
     def __init__(self, word_length=6, difficulty='evil'):
+        """Init for DemonWord class"""
         super(DemonWord, self).__init__()
         self.word_length = 6
         self.regexp = '.'*6
@@ -37,13 +32,17 @@ class DemonWord(mw.MysteryWord):
         self.lying_hints = False
 
     def set_word_length(self, word_length=6):
+        """Sets the word_length and initial blanke regexp,
+           as well as filtering the word_list for the number of characters
+        """
         self.word_length = word_length
         self.regexp = '.' * word_length
         self.word_list = self.filter_word_list(self.word_list, self.regexp)
 
     def filter_word_list(self, word_list, regexp):
-        """Converts are simplified regexp to proper python regexp syntax
-           Regexp consists of any character that has been correctly guessed or . if location is unassigned
+        """Converts our simplified regexp to proper python regexp syntax
+           Regexp consists of any character that has been correctly guessed
+           or '.' if location is as yet unassigned
         """
         word_list = [word for word in word_list if len(word) == len(regexp)]
         regexp = ''.join(['[a-z]' if char == '.' else char for char in regexp])
@@ -52,7 +51,7 @@ class DemonWord(mw.MysteryWord):
 
     def attempt_guess(self, letter):
         """Return False if invalid, otherwise add to guesses list and return True
-           This also triggers re-evaluation of the current word list
+           This also triggers re-evaluation of the current word_list
         """
         if self.difficulty == 'easy':  #irrelevant in medium/normal mode
             evil = False
@@ -205,6 +204,7 @@ class DemonWord(mw.MysteryWord):
         return True
 
     def pick_single_word(self):
+        """Returns a randomly selected word in self.word_list"""
         return random.choice(self.word_list)
 
     def quick_play(self, silent=False, lying_hint=False):
@@ -225,9 +225,9 @@ class DemonWord(mw.MysteryWord):
 
 def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
     """Gets input from user to conduct a DemonWords game
-       show_hint=True shows hints at each turn
-       lying_hints=True shows hints that make it harder to win
-       debug_output=True provides prints extra information about each turn
+       show_hint=True shows hints at each turn (this will be overridden by user menu)
+       lying_hints=True shows hints that make it harder to win (may be overriden by user menu)
+       debug_output=True provides prints extra information about each turn (may be overriden by command prompt options)
     """
     def guess_prompt():
         guess = ''
