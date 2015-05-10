@@ -178,8 +178,10 @@ class DemonWord(mw.MysteryWord):
         '''
 
 
-def user_interface(show_hints=False):
+def user_interface(show_hint=False, lying_hints=False, show_debug_output=True):
     """Gets input from user to conduct a DemonWords game
+       show_hint=True shows hints at each turn
+       lying_hints=True shows hints that make it harder to win
        debug_output=True provides prints extra information about each turn
     """
     def guess_prompt():
@@ -210,13 +212,12 @@ def user_interface(show_hints=False):
             guess = guess_prompt()
             game.attempt_guess(guess)
             print(game)
-            if show_hints and game.check_win() is None:
-                game.pick_best_letter()
-                print('Current word list has {} words.  '.format(len(game.word_list)), end='')
-                print("Might I recommend you try '{}'?".format(game.hint))
+            if show_hint:
+                show_hints()
             print(''.format())
             if game.check_win() is not None:
                 break
+
     def play_again():
         y_n = input('Play again [Y/n]?').lower()
         if y_n == 'n':
@@ -224,18 +225,25 @@ def user_interface(show_hints=False):
         else:
             return True
 
+    def show_hints():
+        if game.check_win() is None:
+            game.pick_best_letter()
+            print('Current word list has {} words.  '.format(len(game.word_list)), end='')
+            print("Might I recommend you try '{}'?".format(game.hint))
+
+
 
     game = DemonWord()
+    game.debug_ouput = show_debug_output
     game.import_word_list('/usr/share/dict/words')
+    if game.debug_output:
+        game.word_list = game.word_list[:1000]
     welcome_menu()
     word_length_menu()
     print('The Mystery Word contains {} letters.'.format(len(game.regexp)))
     print(game)
-    if show_hints and game.check_win() is None:
-        game.pick_best_letter()
-        print('Current word list has {} words.  '.format(len(game.word_list)), end='')
-        print("Might I recommend you try '{}'?".format(game.hint))
-
+    if show_hint:
+        show_hints()
     game_loop()
     while(play_again()):
         game = DemonWord()
@@ -244,7 +252,9 @@ def user_interface(show_hints=False):
         word_length_menu()
         print('The Mystery Word contains {} letters.'.format(len(game.regexp)))
         print(game)
+        if show_hint:
+            show_hints()
         game_loop()
 
 if __name__ == '__main__':
-    user_interface(show_hints=True)
+    user_interface(show_hint=True, lying_hints=False, show_debug_output=True)
