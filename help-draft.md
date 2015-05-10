@@ -9,9 +9,13 @@
 
 
 ##Getting started
+### System Requirements
+  * [Python 3.x.x](https://www.python.org/downloads/) (3.4.3 recommended)
+  * Mac OS X (for the default word list)
+Instructions
 1. Clone this repository or download the files to your chosen directory and execute the following line at your command prompt:
     ```python3 demon_words.py```
-    * Note: Depending on your system configuration, you may need to use ```python demon_words.py```, but be aware that [Python 3.x](https://www.python.org/downloads/) is required (3.4.3 recommended)
+    * Note: Depending on your system configuration, you may need to use ```python demon_words.py```, but be aware that [Python 3.x.x](https://www.python.org/downloads/) is required for game to run unmodified
 2. Follow the prompts to choose your options as described below and then begin the game
 3. At the end of each game, you may choose to play again (if you dare!) or finally admit defeat and exit the game.
 
@@ -64,6 +68,22 @@ If you choose to see hints, the computer will make some gameplay suggestions...t
 * The test files provided are designed for use either with nose or py.test, and as of the time of this writing all tests pass with 82% coverage on demon_words.py
 * A debug mode is provided with several verbose print statements at key points in the code. This mode is activated with a command line argument like so:
     * ```python3 demon_words.py debug```
+* The word list is based on `/usr/share/dict/words`, included with the stock Mac OS X Operating System
+* Hard/Evil mode is based on the concept/algorithm described [here] as well as MIT's 6.00.1x course. (http://nifty.stanford.edu/2011/schwarz-evil-hangman/)
+
+##Future Features:
+* Offer to open web link definition of the Mystery Word
+* More evil algorithm, especially for word list length of 2
+* Option to use custom word dictionary
+* Enhanced debug display
+* Simple words version (1000 common english words)
+* Hard/Harder modes using smaller/full size starting word lists
+* Web or GUI interface
+* Quick play mode for enhanced testing
+* Refactor classes, and possibly make a UI class/module
+* Better test coverage
+* Options for alternate dictionaries on different operating systems
+* Python 2 compatibility
 
 ##API
 Help on DemonWord in module demon_words object:
