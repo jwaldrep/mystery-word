@@ -113,9 +113,14 @@ class DemonWord(mw.MysteryWord):
         max = 0
         word_family = ''
         if (not evil) and len(word_families) > 1:
-            #if self.current_guess in word_families: #if guessed letter is somewhere in the keys
-            del(word_families[self.regexp])   #remove incorrect guesses as an option
-
+            #print('word_families: {}'.format(word_families))
+            if self.current_guess in ''.join(word_families): #if guessed letter is somewhere in the keys
+                try:
+                    temp = word_families[self.regexp]
+                    del(word_families[self.regexp])   #remove incorrect guesses as an option
+                except:
+                    #word_families[self.regexp] = temp
+                    pass  #Dirty hack for bug with easy, long, 'q', 'u' -- index out of range
         if self.debug_output:
             print('word_families:{}'.format(word_families))
         for key, value in word_families.items():
@@ -234,11 +239,21 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
 
     def welcome_menu():
         print('Welcome to Mystery Word!')
+        print("Please select from the following options.")
+
+    def select_difficulty_menu():
+        game.difficulty = one_key_menu(choices={'e': 'easy', 'm': 'medium', 'h': 'hard', 'v': 'evil'},
+                            prompt='Choose a difficulty level -- [E]asy, [M]edium, [H]ard, e[V]il: ',
+                            default='M',
+                            force_compliance=True,
+                            force_msg='Please choose from the listed options, or q to exit.',
+                            exit_words=['q','quit','end','exit'])
+
 
     def word_length_menu():
         valid_choices = 'sml'
         choice = ' '
-        while choice not in valid_choices:
+        while (choice not in valid_choices) or choice == '':
             choice = input('Please choose word length: [S]hort [M]edium or [L]ong: ').lower()
         if choice == 's':
             game.set_word_length(random.randrange(4,7))
@@ -266,11 +281,12 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
                 break
 
     def play_again():
-        y_n = input('Play again [Y/n]?').lower()
-        if y_n == 'n':
-            return False
-        else:
-            return True
+        return one_key_menu(choices={'y': True, 'n': False},
+                            prompt='Play again [Y/n]?',
+                            default='y',
+                            force_compliance=False,
+                            force_msg='',
+                            exit_words=['q','quit','end','exit'])
 
     def show_hints():
         if game.check_win() is None:
@@ -279,7 +295,29 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
             print('Current word list has {} word{}.  '.format(len(game.word_list), s), end='')
             print("Might I recommend you try '{}'?\n".format(game.hint))
 
+    def one_key_menu(choices={'y': True, 'n': False} , prompt='Y/n?', default='y', force_compliance=False, force_msg='Please try again. \n', exit_words=['quit','end','exit']):
+        """Function for capturing case-insensitive single letter input
+           Probably could also be used for >1 letter input with a list input into acceptable
 
+           choices is an iterable that contains all valid input options, must be all lowercase
+           prompt is the text to display on the line taking input
+           default is the value to choose on blank or bogus input, must be lowercase
+           force_compliance set to True loops the input prompt until an acceptable answer is met
+           force_msg is a message to display on improper input, including newlines if needed
+           exit_words contains allowed input for exiting the loop, must be lowercase
+        """
+        kb_input = input(prompt).lower()
+        if kb_input in exit_words:
+            sys.exit('Exiting game by user request.')
+
+        if kb_input not in choices:
+            if force_compliance:
+                print(force_msg)
+                return one_key_menu()
+            else:
+                return default
+        else:
+            return choices[kb_input]
 
     game = DemonWord()
     game.debug_ouput = show_debug_output
@@ -287,6 +325,7 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
     if game.debug_output:
         game.word_list = game.word_list[:1000]
     welcome_menu()
+    select_difficulty_menu()
     word_length_menu()
     print('The Mystery Word contains {} letters.'.format(len(game.regexp)))
     print(game)
@@ -298,7 +337,7 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
         game.import_word_list('/usr/share/dict/words')
         if game.debug_output:
             game.word_list = game.word_list[:1000]
-
+        select_difficulty_menu()
         word_length_menu()
         print('The Mystery Word contains {} letters.'.format(len(game.regexp)))
         print(game)
