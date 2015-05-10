@@ -12,10 +12,12 @@ class DemonWord(mw.MysteryWord):
        word_length is the number of letters in word to guess
        difficulty is 'easy'/'medium'/'hard'/'evil'
 
-            easy = keep words in word list using guessed letter if at all possible
-            medium = normal hangman game, computer picks a level
+            medium = normal hangman game, computer picks a mystery word
             hard = computer dodges your guesses, always maximizing the number of possible words
-            evil = same as hard, but hints are misleading
+            evil = same as hard, but hints are misleading (suggests worst possible guess)
+            easy = same AI as hard mode, but tries to maximize player's chance of correct guesses
+ 
+
     """
     def __init__(self, word_length=6, difficulty='evil'):
         """Init for DemonWord class"""
@@ -227,7 +229,7 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
     """Gets input from user to conduct a DemonWords game
        show_hint=True shows hints at each turn (this will be overridden by user menu)
        lying_hints=True shows hints that make it harder to win (may be overriden by user menu)
-       debug_output=True provides prints extra information about each turn (may be overriden by command prompt options)
+       debug_output=True provides prints extra information about each turn (may be overriden by command line options)
     """
     def guess_prompt():
         guess = ''
