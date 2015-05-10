@@ -15,14 +15,14 @@ import re
 class DemonWord(mw.MysteryWord):
     """DemonWord class is a mystery word game which evilly dodges user guesses
        word_length is the number of letters in word to guess
-       difficulty is 'easy'/'medium'/'hard'
+       difficulty is 'easy'/'medium'/'hard'/'evil'
 
             easy = keep words in word list using guessed letter if at all possible
             medium = normal hangman game, computer picks a level
             hard = computer dodges your guesses, always maximizing the number of possible words
             evil = same as hard, but hints are misleading
     """
-    def __init__(self, word_length=6, difficulty='easy'):
+    def __init__(self, word_length=6, difficulty='evil'):
         super(DemonWord, self).__init__()
         self.word_length = 6
         self.regexp = '.'*6
@@ -33,6 +33,7 @@ class DemonWord(mw.MysteryWord):
         self.word_list = ['echo', 'heal', 'best', 'lazy']
         self.difficulty = difficulty
         self.current_guess = ''
+        self.lying_hints = False
 
     def set_word_length(self, word_length=6):
         self.word_length = word_length
@@ -142,9 +143,6 @@ class DemonWord(mw.MysteryWord):
             available_hits = [letter for letter in available if letter in word_list_set]
             self.hint = random.choice(available_hits)
 
-#+Add check for all letter scores are 1 or len(word_list)<3
-#+Add normal non-evil mode where word list is filtered to 1 long
-#+Add easy mode where only check is to guarantee that choice is in list if possible (and has largest list)
         if len(self.word_list) < 3:
             simple_pick()
             return
@@ -203,7 +201,7 @@ class DemonWord(mw.MysteryWord):
     def pick_single_word(self):
         return random.choice(self.word_list)
 
-    def quick_play(self, silent=False, lying_hint=True):
+    def quick_play(self, silent=False, lying_hint=False):
         """Not yet implemented"""
         pass
         '''
@@ -248,11 +246,14 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
             game.set_word_length(random.randrange(6,9))
         if choice == 'l':
             game.set_word_length(random.randrange(8,12))
-
+        ###Move these elsewhere, if possible:
         if game.difficulty == 'medium':
 
             game.word = random.choice([x for x in game.word_list if len(x) == game.word_length])
             game.word_list = [game.word]
+
+        if game.difficulty == 'evil':
+            game.lying_hints = True
 
     def game_loop():
         while True:
@@ -273,7 +274,7 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
 
     def show_hints():
         if game.check_win() is None:
-            game.pick_best_letter(lying_hints)
+            game.pick_best_letter(game.lying_hints)
             s = 's' if len(game.word_list) > 1 else ''
             print('Current word list has {} word{}.  '.format(len(game.word_list), s), end='')
             print("Might I recommend you try '{}'?\n".format(game.hint))
