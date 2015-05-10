@@ -4,6 +4,7 @@ import mystery_word as mw
 import pdb
 import random
 import re
+import sys
 
 
 #length of word is decided at the beginning
@@ -244,9 +245,17 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
     def select_difficulty_menu():
         game.difficulty = one_key_menu(choices={'e': 'easy', 'm': 'medium', 'h': 'hard', 'v': 'evil'},
                             prompt='Choose a difficulty level -- [E]asy, [M]edium, [H]ard, e[V]il: ',
-                            default='M',
+                            default='m',
                             force_compliance=True,
                             force_msg='Please choose from the listed options, or q to exit.',
+                            exit_words=['q','quit','end','exit'])
+
+    def choose_hints_menu():
+        return one_key_menu(choices={'y': True, 'n': False},
+                            prompt='Would you like friendly hints? [y/N] : ',
+                            default='n',
+                            force_compliance=False,
+                            force_msg='',
                             exit_words=['q','quit','end','exit'])
 
 
@@ -327,6 +336,7 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
     welcome_menu()
     select_difficulty_menu()
     word_length_menu()
+    show_hint = choose_hints_menu()
     print('The Mystery Word contains {} letters.'.format(len(game.regexp)))
     print(game)
     if show_hint:
@@ -339,6 +349,7 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
             game.word_list = game.word_list[:1000]
         select_difficulty_menu()
         word_length_menu()
+        show_hint = choose_hints_menu()
         print('The Mystery Word contains {} letters.'.format(len(game.regexp)))
         print(game)
         if show_hint:
