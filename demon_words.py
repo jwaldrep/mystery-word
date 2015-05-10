@@ -117,6 +117,20 @@ class DemonWord(mw.MysteryWord):
         alphabet = 'abcdefghijklmnopqrstuvwxyz'
         available = [letter for letter in alphabet if letter not in self.guesses]
         letter_scores = {}
+
+        def simple_pick():
+            """Just pick a letter based on letters known to be in word_list words"""
+            word_list_set = set(''.join(self.word_list)) #removes duplicates
+            available_hits = [letter for letter in available if letter in word_list_set]
+            self.hint = random.choice(available_hits)
+
+#+Add check for all letter scores are 1 or len(word_list)<3
+#Add normal non-evil mode where word list is filtered to 1 long
+#Add easy mode where only check is to guarantee that choice is in list if possible (and has largest list)
+        if len(self.word_list) < 3:
+            simple_pick()
+            return
+
         for letter in available:
             ##word_families = self.find_word_families(self.regexp, self.word_list, letter)
             ##print('word_families: {}'.format(self.word_families))
@@ -143,9 +157,9 @@ class DemonWord(mw.MysteryWord):
             min_score = min([len(letter_scores[letter]) for letter in available])
             max_score = max([len(letter_scores[letter]) for letter in available])
 
-#Add check for all letter scores are 1 or len(word_list)<3
-#Add easy mode where only check is to guarantee that choice is in list if possible (and has largest list)
-#Add non-evil mode where word list is filtered to 1 long
+        if (max_score == 1 and lie==True) or (min_score == 1 and lie == False):
+            simple_pick()
+            return
 
         for letter in letter_scores:
             if lie==True and len(letter_scores[letter]) == max_score:
@@ -154,8 +168,6 @@ class DemonWord(mw.MysteryWord):
             elif lie==False and len(letter_scores[letter]) == min_score:
                 self.hint = letter
 
-                if len(self.word_list) < 2:
-                    self.hint = letter #wrong
 
     def display_word(self):
         """Returns a string showing which letters from letter_list are in word"""
