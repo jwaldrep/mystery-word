@@ -357,4 +357,12 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
         game_loop()
 
 if __name__ == '__main__':
-    user_interface(show_hint=True, lying_hints=False, show_debug_output=False)
+    """Use 'debug' command line option to enter debug mode"""
+    to_debug = False
+    try:
+        if len(sys.argv) > 1 and sys.argv[1] == 'debug':
+            to_debug = True
+            print('Running in debug mode...')
+    except:
+        pass
+    user_interface(show_hint=True, lying_hints=False, show_debug_output=to_debug)
