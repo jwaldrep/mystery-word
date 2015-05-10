@@ -16,7 +16,7 @@ class DemonWord(mw.MysteryWord):
             hard = computer dodges your guesses, always maximizing the number of possible words
             evil = same as hard, but hints are misleading (suggests worst possible guess)
             easy = same AI as hard mode, but tries to maximize player's chance of correct guesses
- 
+
 
     """
     def __init__(self, word_length=6, difficulty='evil'):
@@ -271,7 +271,7 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
         if choice == 'm':
             game.set_word_length(random.randrange(6,9))
         if choice == 'l':
-            game.set_word_length(random.randrange(8,12))
+            game.set_word_length(random.randrange(8,13))
         ###Move these elsewhere, if possible:
         if game.difficulty == 'medium':
 
