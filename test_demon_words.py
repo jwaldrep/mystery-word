@@ -67,16 +67,43 @@ def test_pick_best_letter():
     game.word_list = ['echo', 'heal', 'best', 'lazy']
     game.attempt_guess('x')
     for _ in range(1000):
-        game.pick_best_letter()
+        game.pick_best_letter(lie=False)
         assert game.hint in 'hal'
+        #may need better test here
 
-    game.word_list = ['heal', 'herd']
+def test_pick_best_letter_no_lie():
+    test_setup()
+    game.word_list = ['heal', 'herd', 'hers']
+    game.guesses = [x for x in 'abcdefghijklmnopqrstuvwxyz' if x not in 'herdalsq']
+        #    game.word_list = ['heal', 'herd', 'hers'] # x not in herdals
+        #WRONG WAY OF THINKING (Common Letters): h:3, e:3, r:2, d:1, a:1, l:1, s:1
+        #(longest wordlist for any regexp from letter, starting with regexp='....'
+        #so right way is: h:3>0x e:3>0x r:2>1x d:2x>1 a:2x>1 l:2x>1 s:2x>1 q:3>0x
+        #(x=....)
+
+        #    game.word_list = ['heal', 'herd', 'hers'] # x not in herdls
+        #h:3>0x e:3>0x r:3>0x d:2x>1 l:2x>1 s:2x>1
+    for _ in range(1000):
+        game.pick_best_letter(lie=False)
+        assert game.hint in 'rdals'
+
+
+def test_pick_best_letter_lie():
+    test_setup()
+    game.word_list = ['heal', 'herd', 'hers']
+    game.guesses = [x for x in 'abcdefghijklmnopqrstuvwxyz' if x not in 'herdalsq']
     for _ in range(1000):
         game.pick_best_letter(lie=True)
-        assert game.hint in 'x'
+        assert game.hint in 'heq'
+
+def test_pick_best_letter_last_word():
+    test_setup()
+    game.word_list = ['heal']
+    game.guesses = [x for x in 'abcdefghijklmnopqrstuvwxyz' if x not in 'heal']
     for _ in range(1000):
-        game.pick_best_letter(lie=True)
-        assert game.hint in 'x'
+        game.pick_best_letter(lie=False)
+        assert game.hint in 'heal'
+
 
 '''
 def find_word_family(self, current_regexp, word, letter):
