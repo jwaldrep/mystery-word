@@ -5,10 +5,10 @@
 
 
 ##Introduction
-*Mystery Word* is the familiar word guessing game of Hangman, re-imagined for the 21st century.  Despite the kinder, gentler name, this game is not your friend.  Like nearly all modern technology, it seems hell-bent on frustrating the user, and darned if it hasn't gotten _really, really good at it._
+*Mystery Word* is the familiar word guessing game of *Hangman*, re-imagined for the 21st century.  Despite the kinder, gentler name, this game is not your friend.  Like nearly all modern technology, it seems hell-bent on frustrating the user, and darned if it hasn't gotten _really, really good_ at it.
 
 
-##Getting started
+##Getting Started
 ### System Requirements
   * [Python 3.x.x](https://www.python.org/downloads/) (3.4.3 recommended)
   * Mac OS X (for the default word list)
@@ -16,8 +16,8 @@
 ### Instructions
 1. Clone this repository or download the files to your chosen directory and execute the following line at your command prompt:
     ```python3 demon_words.py```
-    * Note: Depending on your system configuration, you may need to use ```python demon_words.py```, but be aware that [Python 3.x.x](https://www.python.org/downloads/) is required for game to run unmodified
-2. Follow the prompts to choose your options as described below and then begin the game
+    * Note: Depending on your system configuration, you may need to use ```python demon_words.py```, but be aware that [Python 3.x.x](https://www.python.org/downloads/) is required for game to run unmodified.
+2. Follow the prompts to choose your options as described below and then begin the game.
 3. At the end of each game, you may choose to play again (if you dare!) or finally admit defeat and exit the game.
 
 ##Gameplay Options
@@ -28,7 +28,7 @@ Choose from the following four difficulties by entering the listed menu selectio
 Mode   | Menu Selection |Description
 -----|:--------------:|-----------
 Easy   | E | It almost seems like the computer is trying to help you out...
-Medium | M | Just a normal hangman game where the computer picks a word and user guesses...but I hope you have a good vocabulary! I think you'll actually stand a chance here, even without the hints.
+Medium | M | Just a normal game of *Hangman* where the computer picks a word and user guesses...but I hope you have a good vocabulary! I think you'll actually stand a chance here, even without the hints.
 Hard   | H | Just when you thought you were getting the hang of it, the computer starts flexing its processor. You might need the hints here to make any headway, but I promise the computer is not outright lying. If you don't believe me, check your guesses against the word after you've lost. And you'll almost certainly lose.
 Evil   | V | Now it seems clear that the computer is out to get you, and you don't stand a chance.
 
@@ -54,7 +54,7 @@ With some pretty obscure words available, you may want to see what the mystery w
 
 
 
-##Developer Information:
+##Information for Developers
 * These modules have been tested with Python 3.4, and will not work in Python 2.x without modification
 * demon_words.py is the main module for the game, while mystery_word.py is a necessary dependency
   * Nonetheless, mystery_word.py can be played as a normal hangman game, but demon_words has been designed to completely replace and extend its functionality
@@ -62,13 +62,13 @@ With some pretty obscure words available, you may want to see what the mystery w
 * A debug mode is provided with several verbose print statements at key points in the code. This mode is activated with a command line argument like so:
     * ```python3 demon_words.py debug```
 * The word list is based on `/usr/share/dict/words`, included with the stock Mac OS X Operating System
-* Hard/Evil mode is based on the concept/algorithm described [here] as well as MIT's 6.00.1x course. (http://nifty.stanford.edu/2011/schwarz-evil-hangman/)
+* Hard/Evil mode is based on the concept/algorithm described [here](http://nifty.stanford.edu/2011/schwarz-evil-hangman/) as well as MIT's 6.00.1x course.
 
-##Future Features:
+##Future Features
 * More evil algorithm, especially for word list length of 2
 * Option to use custom word dictionary
 * Enhanced debug display
-* Simple words version (1000 common english words)
+* Simple words version (1000 common English words)
 * Hard/Harder modes using smaller/full size starting word lists
 * Web or GUI interface
 * Quick play mode for enhanced testing
@@ -76,6 +76,7 @@ With some pretty obscure words available, you may want to see what the mystery w
 * Better test coverage
 * Options for alternate dictionaries on different operating systems
 * Python 2 compatibility
+* Support for other languages and alphabets
 
 ##API
 Help on DemonWord in module demon_words object:
