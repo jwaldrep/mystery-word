@@ -19,7 +19,7 @@ class DemonWord(mw.MysteryWord):
         self.word_length = 6
         self.regexp = '.'*6
         self.word = None
-        self.debug_output = False
+        self.debug_output = True
         self.hint = ''
         self.word_families = {}
         self.word_list = ['echo', 'heal', 'best', 'lazy']
@@ -130,17 +130,28 @@ class DemonWord(mw.MysteryWord):
             #possible_word = potential_word_list[0]
             #possible_regexp = self.find_word_family(self.regexp, possible_word, letter)
 
-            letter_scores[letter] = len(potential_word_list)
+            letter_scores[letter] = potential_word_list
         if self.debug_output:
-            print('letter scores: {}'.format(letter_scores))
-        max_score = max([letter_scores[letter] for letter in letter_scores])
-        min_score = min([letter_scores[letter] for letter in letter_scores])
+            print('letter scores: {}'.format([len(letter_scores[x]) for x in letter_scores]))
+
+
+        try:
+            min_score = min([len(letter_scores[letter]) for letter in available if letter in ''.join(letter_scores[letter])])
+            max_score = max([len(letter_scores[letter]) for letter in available if letter not in ''.join(letter_scores[letter])])
+
+        except:
+            min_score = min([len(letter_scores[letter]) for letter in available])
+            max_score = max([len(letter_scores[letter]) for letter in available])
+
+#Add check for all letter scores are 1 or len(word_list)<3
+#Add easy mode where only check is to guarantee that choice is in list if possible (and has largest list)
+#Add non-evil mode where word list is filtered to 1 long
 
         for letter in letter_scores:
-            if lie==True and letter_scores[letter] == max_score:
+            if lie==True and len(letter_scores[letter]) == max_score:
                 self.hint = letter
 
-            elif lie==False and letter_scores[letter] == min_score:
+            elif lie==False and len(letter_scores[letter]) == min_score:
                 self.hint = letter
 
                 if len(self.word_list) < 2:
