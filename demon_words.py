@@ -22,7 +22,7 @@ class DemonWord(mw.MysteryWord):
             hard = computer dodges your guesses, always maximizing the number of possible words
             evil = same as hard, but hints are misleading
     """
-    def __init__(self, word_length=6, difficulty='hard'):
+    def __init__(self, word_length=6, difficulty='medium'):
         super(DemonWord, self).__init__()
         self.word_length = 6
         self.regexp = '.'*6
@@ -239,6 +239,11 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
         if choice == 'l':
             game.set_word_length(random.randrange(8,12))
 
+        if game.difficulty == 'medium':
+
+            game.word = random.choice([x for x in game.word_list if len(x) == game.word_length])
+            game.word_list = [game.word]
+
     def game_loop():
         while True:
             guess = guess_prompt()
@@ -246,7 +251,6 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
             print(game)
             if show_hint:
                 show_hints()
-            print(''.format())
             if game.check_win() is not None:
                 break
 
@@ -260,8 +264,9 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
     def show_hints():
         if game.check_win() is None:
             game.pick_best_letter(lying_hints)
-            print('Current word list has {} words.  '.format(len(game.word_list)), end='')
-            print("Might I recommend you try '{}'?".format(game.hint))
+            s = 's' if len(game.word_list) > 1 else ''
+            print('Current word list has {} word{}.  '.format(len(game.word_list), s), end='')
+            print("Might I recommend you try '{}'?\n".format(game.hint))
 
 
 
