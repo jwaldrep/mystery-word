@@ -43,20 +43,12 @@ Long         | L             | 8 to 12
 ###Hints
 If you choose to see hints, the computer will make some gameplay suggestions...though you will have to decide for yourself if they can be trusted.
 
+###Word definition option
+With some pretty obscure words available, you may want to see what the mystery word actually means after it is revealed. Responding positively will open a browser window with a [Yahoo!](www.yahoo.com) web search for the definition.  We claim no responsibility for what you may find out there!
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+---------------------------------------
 
 
 
@@ -72,7 +64,6 @@ If you choose to see hints, the computer will make some gameplay suggestions...t
 * Hard/Evil mode is based on the concept/algorithm described [here] as well as MIT's 6.00.1x course. (http://nifty.stanford.edu/2011/schwarz-evil-hangman/)
 
 ##Future Features:
-* Offer to open web link definition of the Mystery Word
 * More evil algorithm, especially for word list length of 2
 * Option to use custom word dictionary
 * Enhanced debug display

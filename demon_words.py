@@ -293,7 +293,7 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
                 break
 
     def define_word_menu():
-        my_word = game.word
+        my_word = game.word if game.check_win() is False else game.regexp
         show_definition =  one_key_menu(choices={'y': True, 'n': False},
                             prompt="Would you like to know what the heck '{}' means? [y/N]: ".format(my_word),
                             default='n',
@@ -301,7 +301,8 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
                             force_msg='',
                             exit_words=['q','quit','end','exit'])
         if show_definition:
-            webbrowser.open('https://search.yahoo.com/search;?p=define%3A+' + my_word)
+            my_url = 'https://search.yahoo.com/search;?p=define%3A+' + my_word
+            webbrowser.open(my_url)
 
     def play_again():
         define_word_menu()
