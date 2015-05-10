@@ -5,6 +5,7 @@ import pdb
 import random
 import re
 import sys
+import webbrowser
 
 
 class DemonWord(mw.MysteryWord):
@@ -291,7 +292,19 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
             if game.check_win() is not None:
                 break
 
+    def define_word_menu():
+        my_word = game.word
+        show_definition =  one_key_menu(choices={'y': True, 'n': False},
+                            prompt="Would you like to know what the heck '{}' means? [y/N]: ".format(my_word),
+                            default='n',
+                            force_compliance=False,
+                            force_msg='',
+                            exit_words=['q','quit','end','exit'])
+        if show_definition:
+            webbrowser.open('https://search.yahoo.com/search;?p=define%3A+' + my_word)
+
     def play_again():
+        define_word_menu()
         return one_key_menu(choices={'y': True, 'n': False},
                             prompt='Play again [Y/n]?',
                             default='y',
