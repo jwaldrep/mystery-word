@@ -1,7 +1,7 @@
 
 import mystery_word as mw
 
-import pdb
+# import pdb
 import random
 import re
 import sys
@@ -14,9 +14,12 @@ class DemonWord(mw.MysteryWord):
        difficulty is 'easy'/'medium'/'hard'/'evil'
 
             medium = normal hangman game, computer picks a mystery word
-            hard = computer dodges your guesses, always maximizing the number of possible words
-            evil = same as hard, but hints are misleading (suggests worst possible guess)
-            easy = same AI as hard mode, but tries to maximize player's chance of correct guesses
+            hard = computer dodges your guesses, always maximizing the number
+                    of possible words
+            evil = same as hard, but hints are misleading
+                    (suggests worst possible guess)
+            easy = same AI as hard mode, but tries to maximize
+                    player's chance of correct guesses
 
 
     """
@@ -56,18 +59,20 @@ class DemonWord(mw.MysteryWord):
         """Return False if invalid, otherwise add to guesses list and return True
            This also triggers re-evaluation of the current word_list
         """
-        if self.difficulty == 'easy':  #irrelevant in medium/normal mode
+        if self.difficulty == 'easy':  # irrelevant in medium/normal mode
             evil = False
         else:
             evil = True
-        #pdb.set_trace()
-        if self.is_valid_guess(letter) == False:
+        # pdb.set_trace()
+        if not self.is_valid_guess(letter):
             return False
         letter = letter.lower()
 
         old_regexp = self.regexp
-        self.word_families = self.find_word_families(self.regexp, self.word_list, letter)
-        self.word_list = self.pick_word_family(self.word_families, letter, evil)
+        self.word_families = self.find_word_families(self.regexp,
+                                                     self.word_list, letter)
+        self.word_list = self.pick_word_family(self.word_families,
+                                               letter, evil)
         self.guesses.append(letter)
         possible_word = self.word_list[0]
         self.regexp = self.find_word_family(self.regexp, possible_word, letter)
@@ -78,34 +83,38 @@ class DemonWord(mw.MysteryWord):
         else:
             print('Correct!\n')
 
-        if self.check_win() == False:
-            self.word = self.pick_single_word() #The final lie
+        if not self.check_win():
+            self.word = self.pick_single_word()  # The final lie
 
         return True
 
     def find_word_families(self, regexp, word_list, guess):
-        """Given current regexp game state, the current word list, and letter guess,
-            returns dictionary containing lists of words indexed by the regexp which
-            would include them (if that word family is chosen)
+        """Given current regexp game state, the current word list, and letter
+           guess, returns dictionary containing lists of words indexed by the
+           regexp which would include them (if that word family is chosen)
         """
         word_families = {}
         family_members = []
         for word in word_list:
             word_family = self.find_word_family(regexp, word, guess)
-            family_members = word_families.get(word_family,[])
+            family_members = word_families.get(word_family, [])
             family_members.append(word)
             word_families[word_family] = family_members
         return word_families
 
     def find_word_family(self, current_regexp, word, guess):
-        """Returns the regexp which would leave word in play with given guess letter"""
-            #assert game.find_word_family('.....', 'river', 'r') == 'r...r'
-        #output_list = [self.display_regexp_char(letter, word) for letter in word]
+        """Returns the regexp which would leave word in play
+           with given guess letter
+        """
+        # assert game.find_word_family('.....', 'river', 'r') == 'r...r'
+        # output_list = [self.display_regexp_char(letter, word)
+        #                for letter in word]
         new_regexp = list(current_regexp)
         if self.debug_output:
-            print('current_regexp: {}, word: {}'.format(repr(current_regexp), repr(word)))
-        for slot, char  in enumerate(current_regexp):
-            #pdb.set_trace()
+            print('current_regexp: {}, word: {}'.format(repr(current_regexp),
+                                                        repr(word)))
+        for slot, char in enumerate(current_regexp):
+            # pdb.set_trace()
             if word[slot] == guess:
                 new_regexp[slot] = guess
         output = ''.join(new_regexp)
@@ -116,39 +125,47 @@ class DemonWord(mw.MysteryWord):
         max = 0
         word_family = ''
         if (not evil) and len(word_families) > 1:
-            #print('word_families: {}'.format(word_families))
-            if self.current_guess in ''.join(word_families): #if guessed letter is somewhere in the keys
+            # print('word_families: {}'.format(word_families))
+            if self.current_guess in ''.join(word_families):
+                # if guessed letter is somewhere in the keys
                 try:
-                    temp = word_families[self.regexp]
-                    del(word_families[self.regexp])   #remove incorrect guesses as an option
+                    # temp = word_families[self.regexp]
+                    del(word_families[self.regexp])
+                    # remove incorrect guesses as an option
                 except:
-                    #word_families[self.regexp] = temp
-                    pass  #Dirty hack for bug with easy, long, 'q', 'u' -- index out of range
+                    # word_families[self.regexp] = temp
+                    pass
+                    # Dirty hack for bug with easy, long, 'q', 'u'
+                    # -- index out of range
         if self.debug_output:
             print('word_families:{}'.format(word_families))
         for key, value in word_families.items():
-            #Refactor this with a lambda
+            # Refactor this with a lambda
             if len(value) > max:
                 max = len(value)
                 word_family = key
             if self.debug_output:
-                print('{},'.format(len(value)),end='')
+                print('{},'.format(len(value)), end='')
         if self.debug_output:
-            print('\nword_family: {}, return word list: {}'.format(repr(word_family), repr(word_families[word_family])))
-        #consider adding check if it is the last turn to force a loss
+            print('\nword_family: {}, return word list: {}'.format(
+                repr(word_family), repr(word_families[word_family])))
+        # consider adding check if it is the last turn to force a loss
 
         return word_families[word_family]
 
     def pick_best_letter(self, lie=False):
-        """Recommend best letter for user to pick if lie=False, otherwise worst"""
+        """Recommend best letter for user to pick if lie=False, otherwise worst
+        """
         alphabet = 'abcdefghijklmnopqrstuvwxyz'
-        available = [letter for letter in alphabet if letter not in self.guesses]
+        available = [letter for letter in alphabet
+                     if letter not in self.guesses]
         letter_scores = {}
 
         def simple_pick():
-            """Just pick a letter based on letters known to be in word_list words"""
-            word_list_set = set(''.join(self.word_list)) #removes duplicates
-            available_hits = [letter for letter in available if letter in word_list_set]
+            """Just pick a letter known to be within >= 1 word_list words"""
+            word_list_set = set(''.join(self.word_list))  # removes duplicates
+            available_hits = [letter for letter in available
+                              if letter in word_list_set]
             self.hint = random.choice(available_hits)
 
         if len(self.word_list) < 3:
@@ -156,45 +173,58 @@ class DemonWord(mw.MysteryWord):
             return
 
         for letter in available:
-            ##word_families = self.find_word_families(self.regexp, self.word_list, letter)
-            ##print('word_families: {}'.format(self.word_families))
-            ##letter_scores[letter] = ([word_families[x] for x in word_families])
-            #possible_word = self.word_list[0]
-            #potential_regexp = self.find_word_family(self.regexp, possible_word, letter)
-            #potential_wordlist = self.filter_word_list(self.word_list, potential_regexp)
-            #letter_scores[letter] = len(potential_wordlist)
-            potential_word_families = self.find_word_families(self.regexp, self.word_list, letter)
-            potential_word_list = self.pick_word_family(potential_word_families, letter)
-            #possible_word = potential_word_list[0]
-            #possible_regexp = self.find_word_family(self.regexp, possible_word, letter)
+            # # word_families = self.find_word_families(self.regexp,
+            # #                                         self.word_list, letter)
+            # # print('word_families: {}'.format(self.word_families))
+            # # letter_scores[letter] = ([word_families[x]
+            # #                           for x in word_families])
+            # possible_word = self.word_list[0]
+            # potential_regexp = self.find_word_family(self.regexp,
+            #                                          possible_word, letter)
+            # potential_wordlist = self.filter_word_list(self.word_list,
+            #                                            potential_regexp)
+            # letter_scores[letter] = len(potential_wordlist)
+            potential_word_families = self.find_word_families(self.regexp,
+                                                              self.word_list,
+                                                              letter)
+            potential_word_list = self.pick_word_family(potential_word_families,
+                                                        letter)
+            # possible_word = potential_word_list[0]
+            # possible_regexp = self.find_word_family(self.regexp,
+            #                                         possible_word, letter)
 
             letter_scores[letter] = potential_word_list
         if self.debug_output:
-            print('letter scores: {}'.format([len(letter_scores[x]) for x in letter_scores]))
-
+            print('letter scores: {}'.format([len(letter_scores[x])
+                                              for x in letter_scores]))
 
         try:
-            min_score = min([len(letter_scores[letter]) for letter in available if letter in ''.join(letter_scores[letter])])
-            max_score = max([len(letter_scores[letter]) for letter in available if letter not in ''.join(letter_scores[letter])])
+            min_score = min([len(letter_scores[letter]) for letter in available
+                             if letter in ''.join(letter_scores[letter])])
+            max_score = max([len(letter_scores[letter]) for letter in available
+                             if letter not in ''.join(letter_scores[letter])])
 
         except:
-            min_score = min([len(letter_scores[letter]) for letter in available])
-            max_score = max([len(letter_scores[letter]) for letter in available])
+            min_score = min([len(letter_scores[letter])
+                             for letter in available])
+            max_score = max([len(letter_scores[letter])
+                             for letter in available])
 
-        if (max_score == 1 and lie==True) or (min_score == 1 and lie == False):
+        if (max_score == 1 and lie is True) or (min_score == 1
+                                                and lie is False):
             simple_pick()
             return
 
         for letter in letter_scores:
-            if lie==True and len(letter_scores[letter]) == max_score:
+            if lie is True and len(letter_scores[letter]) == max_score:
                 self.hint = letter
 
-            elif lie==False and len(letter_scores[letter]) == min_score:
+            elif lie is False and len(letter_scores[letter]) == min_score:
                 self.hint = letter
-
 
     def display_word(self):
-        """Returns a string showing which letters from letter_list are in word"""
+        """Returns a string showing which letters from letter_list are in word
+        """
         output_list = [self.display_letter(letter) for letter in self.regexp]
         output = ' '.join(output_list)
         return output
@@ -228,9 +258,11 @@ class DemonWord(mw.MysteryWord):
 
 def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
     """Gets input from user to conduct a DemonWords game
-       show_hint=True shows hints at each turn (this will be overridden by user menu)
-       lying_hints=True shows hints that make it harder to win (may be overriden by user menu)
-       debug_output=True provides prints extra information about each turn (may be overriden by command line options)
+       show_hint=True shows hints at each turn (overridden by user menu)
+       lying_hints=True shows hints that make it harder to win
+                        (may be overriden by user menu)
+       debug_output=True provides prints extra information about each turn
+                         (may be overriden by command line options)
     """
     def guess_prompt():
         guess = ''
@@ -246,12 +278,14 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
         print("Please select from the following options.")
 
     def select_difficulty_menu():
-        game.difficulty = one_key_menu(choices={'e': 'easy', 'm': 'medium', 'h': 'hard', 'v': 'evil'},
-                            prompt='Choose a difficulty level -- [E]asy, [M]edium, [H]ard, e[V]il: ',
-                            default='m',
-                            force_compliance=True,
-                            force_msg='Please choose from the listed options, or q to exit.',
-                            exit_words=['q','quit','end','exit'])
+        game.difficulty = one_key_menu(
+            choices={'e': 'easy', 'm': 'medium', 'h': 'hard', 'v': 'evil'},
+            prompt='Choose a difficulty level -- [E]asy, [M]edium, '
+            '[H]ard, e[V]il: ',
+            default='m',
+            force_compliance=True,
+            force_msg='Please choose from the listed options, or q to exit.',
+            exit_words=['q', 'quit', 'end', 'exit'])
 
     def choose_hints_menu():
         return one_key_menu(choices={'y': True, 'n': False},
@@ -259,24 +293,25 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
                             default='n',
                             force_compliance=False,
                             force_msg='',
-                            exit_words=['q','quit','end','exit'])
-
+                            exit_words=['q', 'quit', 'end', 'exit'])
 
     def word_length_menu():
         valid_choices = 'sml'
         choice = ' '
         while (choice not in valid_choices) or choice == '':
-            choice = input('Please choose word length: [S]hort [M]edium or [L]ong: ').lower()
+            choice = input('Please choose word length: '
+                           '[S]hort [M]edium or [L]ong: ').lower()
         if choice == 's':
-            game.set_word_length(random.randrange(4,7))
+            game.set_word_length(random.randrange(4, 7))
         if choice == 'm':
-            game.set_word_length(random.randrange(6,9))
+            game.set_word_length(random.randrange(6, 9))
         if choice == 'l':
-            game.set_word_length(random.randrange(8,13))
-        ###Move these elsewhere, if possible:
+            game.set_word_length(random.randrange(8, 13))
+        # Move these elsewhere, if possible:
         if game.difficulty == 'medium':
 
-            game.word = random.choice([x for x in game.word_list if len(x) == game.word_length])
+            game.word = random.choice([x for x in game.word_list
+                                       if len(x) == game.word_length])
             game.word_list = [game.word]
 
         if game.difficulty == 'evil':
@@ -294,12 +329,15 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
 
     def define_word_menu():
         my_word = game.word if game.check_win() is False else game.regexp
-        show_definition =  one_key_menu(choices={'y': True, 'n': False},
-                            prompt="Would you like to know what the heck '{}' means? [y/N]: ".format(my_word),
-                            default='n',
-                            force_compliance=False,
-                            force_msg='',
-                            exit_words=['q','quit','end','exit'])
+        my_prompt = "Would you like to know what the heck '{}' means? [y/N]: "
+        my_prompt = my_prompt.format(my_word)
+        show_definition = one_key_menu(
+            choices={'y': True, 'n': False},
+            prompt=my_prompt,
+            default='n',
+            force_compliance=False,
+            force_msg='',
+            exit_words=['q', 'quit', 'end', 'exit'])
         if show_definition:
             my_url = 'https://search.yahoo.com/search;?p=define%3A+' + my_word
             webbrowser.open(my_url)
@@ -311,25 +349,38 @@ def user_interface(show_hint=False, lying_hints=False, show_debug_output=False):
                             default='y',
                             force_compliance=False,
                             force_msg='',
-                            exit_words=['q','quit','end','exit'])
+                            exit_words=['q', 'quit', 'end', 'exit'])
 
     def show_hints():
         if game.check_win() is None:
             game.pick_best_letter(game.lying_hints)
             s = 's' if len(game.word_list) > 1 else ''
-            print('Current word list has {} word{}.  '.format(len(game.word_list), s), end='')
+            print('Current word list has {} word{}.  '.format(
+                len(game.word_list), s), end='')
             print("Might I recommend you try '{}'?\n".format(game.hint))
 
-    def one_key_menu(choices={'y': True, 'n': False} , prompt='Y/n?', default='y', force_compliance=False, force_msg='Please try again. \n', exit_words=['quit','end','exit']):
+    def one_key_menu(choices={'y': True, 'n': False}, prompt='Y/n?',
+                     default='y', force_compliance=False,
+                     force_msg='Please try again. \n',
+                     exit_words=['quit', 'end', 'exit']):
         """Function for capturing case-insensitive single letter input
-           Probably could also be used for >1 letter input with a list input into acceptable
+           Probably could also be used for >1 letter input with a list input
+           into acceptabld choices is an iterable that contains all valid input
+           options, must be all lowercase
 
-           choices is an iterable that contains all valid input options, must be all lowercase
            prompt is the text to display on the line taking input
-           default is the value to choose on blank or bogus input, must be lowercase
-           force_compliance set to True loops the input prompt until an acceptable answer is met
-           force_msg is a message to display on improper input, including newlines if needed
-           exit_words contains allowed input for exiting the loop, must be lowercase
+
+           default is the value to choose on blank or bogus input,
+           must be lowercase
+
+           force_compliance set to True loops the input prompt until an
+           acceptable answer is met
+
+           force_msg is a message to display on improper input, including
+           newlines if needed
+
+           exit_words contains allowed input for exiting the loop,
+           must be lowercase
         """
         kb_input = input(prompt).lower()
         if kb_input in exit_words:
@@ -381,4 +432,5 @@ if __name__ == '__main__':
             print('Running in debug mode...')
     except:
         pass
-    user_interface(show_hint=True, lying_hints=False, show_debug_output=to_debug)
+    user_interface(show_hint=True, lying_hints=False,
+                   show_debug_output=to_debug)
