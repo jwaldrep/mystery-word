@@ -168,7 +168,7 @@ class DemonWord(mw.MysteryWord):
                               if letter in word_list_set]
             self.hint = random.choice(available_hits)
 
-        if len(self.word_list) < 3:
+        if len(self.word_list) < 3 and not lie:
             simple_pick()
             return
 

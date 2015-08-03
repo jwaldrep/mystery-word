@@ -76,14 +76,14 @@ def test_is_word_complete():
 def test_winning_game():
     game = mw.MysteryWord()
     game.word = 'landuade'
-    game.quick_play()
+    game.quick_play(letters_to_guess='rstlneaioubcdfghjkmpqvwxyz')
     assert game.check_win() == True
     assert game.num_guesses_left == 1
 
 def test_losing_game():
     game = mw.MysteryWord()
     game.word = 'carbong'
-    game.quick_play()
+    game.quick_play(letters_to_guess='rstlneaioubcdfghjkmpqvwxyz')
     assert game.check_win() == False
     assert game.num_guesses_left == 0
 

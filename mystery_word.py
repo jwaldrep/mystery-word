@@ -62,9 +62,7 @@ class MysteryWord(object):
 
     def is_valid_guess(self, letter):
         """Returns True if letter is a single letter, but not in guesses"""
-        if letter not in self.guesses and len(letter) == 1 and letter.isalpha():
-            return True
-        return False
+        return letter not in self.guesses and len(letter) == 1 and letter.isalpha()
 
     def is_word_complete(self):
         """Returns True if all letters in word are in letter_list"""
@@ -75,7 +73,7 @@ class MysteryWord(object):
 
     def attempt_guess(self, letter):
         """Return False if invalid, otherwise add to guesses list and return True"""
-        if self.is_valid_guess(letter) == False:
+        if not self.is_valid_guess(letter):
             return False
         letter = letter.lower()
         self.guesses.append(letter)
